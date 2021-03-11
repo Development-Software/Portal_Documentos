@@ -44,7 +44,7 @@ namespace applyWeb.Data
                     return objCmd.ExecuteNonQuery();
 
                 }
-                catch (Exception e)
+                catch
                 {
                     return 0;
                 }

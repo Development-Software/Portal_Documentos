@@ -1,0 +1,321 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="Site.master.cs" Inherits="Site" %>
+
+<!DOCTYPE html>
+
+<html>
+<head runat="server">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title style="font-size: x-small">Sistema de Entrega de Documentación Electrónica</title>
+    <asp:ContentPlaceHolder runat="server" ID="HeadContent">
+    </asp:ContentPlaceHolder>
+    <link href="Content/Bootstrap/bootstrap.css" rel="stylesheet" />
+    <link href="Content/Bootstrap/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Raleway:500" rel="stylesheet">
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+    <%--<script src="Scripts/jquery-3.3.1.min.js"></script>--%>
+    <script src="Scripts/Bootstrap/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <%--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js" type="text/javascript"></script>--%>
+    <style>
+        .padre {
+            position: relative;
+            /*background-color: green;*/
+        }
+
+        .uno {
+            position: absolute;
+            /*background-color: red;*/
+            top: 0;
+            left: 0;
+            right: 0;
+            margin: 0 auto;
+            width: 20px;
+        }
+
+        .content {
+            width: 100%;
+            height: 500px;
+            background-size: cover;
+            background-position: center top;
+        }
+
+        .submenu {
+            padding: 3px;
+            margin-left: 10px;
+        }
+
+        .menu {
+            padding: 5px;
+        }
+
+        .submenu_div {
+            display: none;
+        }
+
+        .text {
+            width: 100%;
+            text-align: left;
+        }
+
+        .oculto {
+            display: none;
+        }
+
+        .main {
+            padding: 0px 12px;
+            margin: 12px 8px 8px 8px;
+            min-height: 420px;
+        }
+    </style>
+    <script> 
+        function slide_down_master() {
+            $("#submenu").slideDown("slow");
+            $("#Config_2").show();
+            $("#Config_1").hide();
+            return false;
+        }
+        function slide_up_master() {
+            $("#submenu").slideUp("slow");
+            $("#Config_1").show();
+            $("#Config_2").hide();
+            return false;
+        }
+        function toogle() {
+            $("#Menu").toggle("slide");
+        }
+    </script>
+    
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div id="Pleca" class="padre">
+            <asp:Image ID="Image2" runat="server" Width="100%" ImageUrl="~/Images/Diseno_Nuevo/pleca_morada_clean.png" />
+            <div class="uno" style="margin-top: 25px; text-align: left; width: 80%; height: 100px;">
+                <asp:Label ID="Label1" runat="server" Text="Bienvenido" Font-Names="Raleway" ForeColor="White" Font-Size="Large"></asp:Label>
+            </div>
+        </div>
+        <asp:Panel ID="page_all" runat="server">
+            <div id="page">
+                <div id="Menu" style="width: 29%; float: left; margin-top: 50px;">
+                    <div style="width: 100%;" class="padre">
+                        <asp:Image ID="Administrativo" runat="server" Width="100%" Height="900px" ImageUrl="~/Images/Diseno_Nuevo/Menu.png" />
+                        <asp:Image ID="Alumno" runat="server" Width="100%" Height="600px" ImageUrl="~/Images/Diseno_Nuevo/Menu_Alumno.png" />
+                        <div style="width: 50%; text-align: center; margin-top: 170px; font-family: Raleway" class="uno">
+                            <p>
+                                <asp:HyperLink ID="Inicio" NavigateUrl="~/Inicio.aspx" runat="server" Text="" CssClass="btn btn-secondary-1 text"><i class="fas fa-home"></i>&nbsp;&nbsp;&nbsp;Inicio</asp:HyperLink>
+                            </p>
+                            <p>
+                                <asp:Panel ID="video1" runat="server">
+                                <asp:HyperLink ID="FQS" NavigateUrl="~/Inicio.aspx?video=1" runat="server" Text="" CssClass="btn btn-secondary-1 text" ><i class="fas fa-bullhorn"></i>&nbsp;&nbsp;&nbsp;Video Tutorial</asp:HyperLink>
+                                </asp:Panel>
+                                <asp:Panel ID="video2" runat="server">
+                                <asp:HyperLink ID="HyperLink1" NavigateUrl="~/Inicio.aspx?video=2" runat="server" Text="" CssClass="btn btn-secondary-1 text" ><i class="fas fa-bullhorn"></i>&nbsp;&nbsp;&nbsp;Video Tutorial</asp:HyperLink>
+                                </asp:Panel>
+                            </p>
+                            <p>
+                                <asp:HyperLink ID="Carga_Documentos" NavigateUrl="~/CargaDocumentos.aspx" runat="server" Text="" CssClass="btn btn-secondary-1 text"><i class="fas fa-file-upload"></i>&nbsp;&nbsp;&nbsp;Cargar Documentos</asp:HyperLink>
+                            </p>
+                            <p>
+                                <asp:HyperLink ID="Contacto" NavigateUrl="~/Contacto.aspx" runat="server" Text="" CssClass="btn btn-secondary-1 text"><i class="fas fa-id-card"></i>&nbsp;&nbsp;&nbsp;Datos de contacto</asp:HyperLink>
+                            </p>
+                            <div id="Config_1">
+                                <p>
+                                    <asp:Panel ID="Configuracion1" runat="server">
+                                        <button id="Setup1" class="btn btn-secondary-1" style="width: 100%; text-align: left; margin-right: 25px;" onclick="slide_down_master(); return false"><i class="fas fa-cogs"></i>&nbsp;&nbsp;&nbsp;Configuración</button>
+                                    </asp:Panel>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                </p>
+                            </div>
+                            <div id="Config_2" class="oculto">
+                                <p>
+                                    <asp:Panel ID="Configuracion2" runat="server">
+                                        <button id="Setup2" class="btn btn-secondary-1" style="width: 100%; text-align: left; margin-right: 25px;" onclick="slide_up_master(); return false"><i class="fas fa-cogs"></i>&nbsp;&nbsp;&nbsp;Configuración</button>
+                                    </asp:Panel>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                    <p>
+                                    </p>
+                                </p>
+                            </div>
+                            <div id="submenu" class="submenu_div">
+                                <p>
+                                    <asp:HyperLink ID="Tipos_Documentos" NavigateUrl="~/Tipodocumentos.aspx" runat="server" Text="" CssClass="btn btn-secondary-submenu text"><i class="fas fa-file-alt"></i>&nbsp;&nbsp;&nbsp;Catálogo de Documentos</asp:HyperLink>
+                                </p>
+                                <p>
+                                    <asp:HyperLink ID="Usuarios" NavigateUrl="~/Usuarios.aspx" runat="server" Text="" CssClass="btn btn-secondary-submenu text"><i class="fas fa-users-cog"></i>&nbsp;&nbsp;&nbsp;Mantenimiento de Usuarios</asp:HyperLink>
+                                </p>
+                                <p>
+                                    <asp:HyperLink ID="Permisos" NavigateUrl="~/Permisos.aspx" runat="server" Text="" CssClass="btn btn-secondary-submenu text"><i class="fas fa-key"></i>&nbsp;&nbsp;&nbsp;Configuración de Permisos</asp:HyperLink>
+                                </p>
+                            </div>
+                            <p>
+                                <asp:HyperLink ID="Administracion" NavigateUrl="~/ListadoAdministracion.aspx?Page=0" runat="server" Text="" CssClass="btn btn-secondary-1 text"><i class="fas fa-chart-line"></i>&nbsp;&nbsp;&nbsp;Administración</asp:HyperLink>
+                            </p>
+                            <p>
+                                <asp:HyperLink ID="Reportes" NavigateUrl="~/Reporte_General.aspx" runat="server" Text="" CssClass="btn btn-secondary-1 text"><i class="fas fa-clipboard-list"></i>&nbsp;&nbsp;&nbsp;Reportes</asp:HyperLink>
+                            </p>
+                            
+                            <p>
+                                <asp:HyperLink ID="Logout" NavigateUrl="~/Logout.aspx" runat="server" Text="" CssClass="btn btn-logout text"><i class="fas fa-sign-out-alt"></i>&nbsp;&nbsp;&nbsp;Cerrar Sesión</asp:HyperLink>
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+                <div id="Contenido" style="width: 70%; float: left; font-family: Raleway">
+                    <asp:Panel ID="sesion_admin" runat="server">
+                        <div id="Session" style="margin-top: 10px; margin-right: 50px; text-align: right">
+                            <asp:Label ID="lblUsuario" runat="server" Font-Names="Raleway" ForeColor="#5B0975"></asp:Label><br />
+                            <asp:Label ID="lblRol" runat="server" Font-Names="Raleway" ForeColor="#3C9AB6"></asp:Label>
+                        </div>
+                    </asp:Panel>
+                    <asp:Panel ID="sesion_alumno" runat="server">
+                        <div id="Session_alumno" style="margin-top: 10px; margin-right: 20px; text-align: right">
+                            <asp:Label ID="lblUsuario_Alumno" runat="server" Font-Names="Raleway" ForeColor="#5B0975"></asp:Label>
+                        </div>
+                    </asp:Panel>
+                    <div class="main" style="width: 100%; font-size: 11px;">
+                        <asp:ContentPlaceHolder ID="MainContent" runat="server">
+                        </asp:ContentPlaceHolder>
+                    </div>
+                </div>
+            </div>
+        </asp:Panel>
+        <div class="footer">
+            <asp:ContentPlaceHolder ID="FooterContent" runat="server">
+                <table width="100%" align="center" style="font-family: Raleway;">
+                    <tr valign="bottom">
+                        <td align="center">
+                            <asp:Label runat="server" ForeColor="#3c9ab6" Font-Bold="true" ID="lblBottomHelp">Si tienes alguna duda, comunícate con tu Asesor al 01 800 0011 852 opción 2</asp:Label>
+                        </td>
+                    </tr>
+                </table>
+            </asp:ContentPlaceHolder>
+        </div>
+    </form>
+</body>
+</html>

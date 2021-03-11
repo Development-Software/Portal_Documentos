@@ -1,0 +1,2 @@
+Unable to cast object of type 'System.Int32' to type 'System.String'.
+SELECT DISTINCT IDNotificacion,IDEstatus,Descripcion,Tipo_Notificacion, Asunto_correo,Cuerpo_correo FROM Configuracion_Notificaciones WHERE Dias=0 AND IDEstatus=@IDEstatus

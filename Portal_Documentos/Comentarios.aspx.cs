@@ -10,7 +10,7 @@ using System.Web.UI.WebControls;
 
 public partial class Comentarios : System.Web.UI.Page
 {
-    applyWeb.Data.Data objExpediente = new applyWeb.Data.Data(System.Configuration.ConfigurationManager.ConnectionStrings["sqlConnectionString"].ConnectionString);
+    applyWeb.Data.Data objExpediente = new applyWeb.Data.Data(System.Configuration.ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!HttpContext.Current.User.Identity.IsAuthenticated)

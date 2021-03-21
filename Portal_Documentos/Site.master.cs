@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -55,32 +56,32 @@ public partial class Site : System.Web.UI.MasterPage
 
         if (Session["user"] != null)
         {
-            SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["sqlConnectionString"].ConnectionString);
+            MySqlConnection ConexionMySql = new MySqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
             string strQuery_valida = "SELECT Count(*) FROM Usuario WHERE Login='" + Session["user"].ToString() + "'";
-            ConexionSql.Open();
-            SqlDataAdapter sqladapter = new SqlDataAdapter();
-            DataSet dssql = new DataSet();
-            SqlCommand commandsql = new SqlCommand(strQuery_valida, ConexionSql);
-            sqladapter.SelectCommand = commandsql;
-            sqladapter.Fill(dssql);
-            sqladapter.Dispose();
-            commandsql.Dispose();
+            ConexionMySql.Open();
+            MySqlDataAdapter mysqladapter = new MySqlDataAdapter();
+            DataSet dsmysql = new DataSet();
+            MySqlCommand cmdmysql = new MySqlCommand(strQuery_valida, ConexionMySql);
+            mysqladapter.SelectCommand = cmdmysql;
+            mysqladapter.Fill(dsmysql);
+            mysqladapter.Dispose();
+            cmdmysql.Dispose();
 
-            if (dssql.Tables[0].Rows[0][0].ToString().Trim() != "0")
+            if (dsmysql.Tables[0].Rows[0][0].ToString().Trim() != "0")
             {
                 string strQueryuser = "SELECT Nombre FROM Usuario WHERE Login='" + Session["user"].ToString() + "'";
 
 
-                DataSet dssql1 = new DataSet();
-                SqlCommand commandsql1 = new SqlCommand(strQueryuser, ConexionSql);
-                sqladapter.SelectCommand = commandsql1;
-                sqladapter.Fill(dssql1);
-                sqladapter.Dispose();
-                commandsql1.Dispose();
+                DataSet dsmysql1 = new DataSet();
+                MySqlCommand cmdmysql1 = new MySqlCommand(strQueryuser, ConexionMySql);
+                mysqladapter.SelectCommand = cmdmysql1;
+                mysqladapter.Fill(dsmysql1);
+                mysqladapter.Dispose();
+                cmdmysql1.Dispose();
                 // LoginName lblLogin = (LoginName)HeadLoginView.FindControl("HeadLoginName");
                 // if (lblLogin != null)
                 // lblLogin.FormatString = dssql1.Tables[0].Rows[0][0].ToString().Trim() + " </br>Perfil: " + Session["Rol"].ToString() + "</br>";
-                lblUsuario.Text = dssql1.Tables[0].Rows[0][0].ToString().Trim();
+                lblUsuario.Text = dsmysql1.Tables[0].Rows[0][0].ToString().Trim();
                 lblRol.Text = "Perfil: " + Session["Rol"].ToString();
             }
             else
@@ -91,7 +92,7 @@ public partial class Site : System.Web.UI.MasterPage
                 lblUsuario.Text = Session["user"].ToString();
                 lblUsuario_Alumno.Text= Session["user"].ToString();
             }
-            ConexionSql.Close();
+            ConexionMySql.Close();
 
         }
         else { lblUsuario.Visible = false; lblRol.Visible = false; }
@@ -125,13 +126,13 @@ public partial class Site : System.Web.UI.MasterPage
                 sesion_alumno.Visible = false;
                 Contacto.Visible = false;
                 video1.Visible = false;
-                SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["sqlConnectionString"].ConnectionString);
-                ConexionSql.Open();
+                MySqlConnection ConexionMySql = new MySqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
+                ConexionMySql.Open();
                 string strQuery = "SELECT DISTINCT IDPrivilegio FROM Permisos_App " +
                                          "WHERE IDPrivilegio NOT IN(SELECT A.IDPrivilegio FROM Permisos_App_Rol A INNER JOIN Permisos_App B ON A.IDPrivilegio= B.IDPrivilegio INNER JOIN Rol C ON A.IDRol=C.IDRol WHERE B.IDPermiso=1 AND C.Nombre='" + Session["Rol"].ToString() + "') " +
                                          "AND IDPermiso = 1";
-                SqlCommand cmd = new SqlCommand(strQuery, ConexionSql);
-                SqlDataReader dr = cmd.ExecuteReader();
+                MySqlCommand cmd = new MySqlCommand(strQuery, ConexionMySql);
+                MySqlDataReader dr = cmd.ExecuteReader();
 
                 while (dr.Read())
                 {
@@ -148,7 +149,7 @@ public partial class Site : System.Web.UI.MasterPage
 
 
                 }
-                ConexionSql.Close();
+                ConexionMySql.Close();
             }
             }
         else

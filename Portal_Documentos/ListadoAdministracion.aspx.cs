@@ -16,13 +16,14 @@ using System.Text;
 using ClosedXML;
 using ClosedXML.Excel;
 using System.Web.Configuration;
+using MySql.Data.MySqlClient;
 
 public partial class ListadoAdministracion : System.Web.UI.Page
 {
     string id_export = null;
     string id_page = null;
     
-    applyWeb.Data.Data objAdministracion = new applyWeb.Data.Data(System.Configuration.ConfigurationManager.ConnectionStrings["sqlConnectionString"].ConnectionString);
+    applyWeb.Data.Data objAdministracion = new applyWeb.Data.Data(System.Configuration.ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
     protected void Page_Load(object sender, EventArgs e)
     {
         try
@@ -78,7 +79,7 @@ public partial class ListadoAdministracion : System.Web.UI.Page
         arrParametros.Add(new applyWeb.Data.Parametro("@Rol", pRol));
         arrParametros.Add(new applyWeb.Data.Parametro("@User", pIDusuario));
         arrParametros.Add(new applyWeb.Data.Parametro("@Status", pStatus));
-        DataSet dsAlumnos = objAdministracion.ExecuteSP("OBTENER_LISTADO_ALUMNOS", arrParametros);
+        DataSet dsAlumnos = objAdministracion.ExecuteSP("Obtener_Listado_Alumnos", arrParametros);
         gvAlumnos.DataSource = dsAlumnos;
         gvAlumnos.DataBind();
         
@@ -96,11 +97,11 @@ public partial class ListadoAdministracion : System.Web.UI.Page
 
     protected void permisos()
     {
-        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["sqlConnectionString"].ConnectionString);
-        ConexionSql.Open();
+        MySqlConnection ConexionMySql = new MySqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
+        ConexionMySql.Open();
         string strQuery = "SELECT DISTINCT A.IDPrivilegio,b.Permiso FROM Permisos_App_Rol A INNER JOIN Permisos_App B ON A.IDPrivilegio=B.IDPrivilegio INNER JOIN Rol C ON A.IDRol=C.IDRol WHERE B.IDMenu=3 AND B.IDSubMenu=1 AND C.Nombre='" + Session["Rol"].ToString() + "'";
-        SqlCommand cmd = new SqlCommand(strQuery, ConexionSql);
-        SqlDataReader dr = cmd.ExecuteReader();
+        MySqlCommand cmd = new MySqlCommand(strQuery, ConexionMySql);
+        MySqlDataReader dr = cmd.ExecuteReader();
         while (dr.Read())
         {
             int IDprivilegio = dr.GetInt32(0);
@@ -115,7 +116,7 @@ public partial class ListadoAdministracion : System.Web.UI.Page
 
 
         }
-        ConexionSql.Close();
+        ConexionMySql.Close();
     }
 
     public override void VerifyRenderingInServerForm(Control control)
@@ -224,7 +225,7 @@ public partial class ListadoAdministracion : System.Web.UI.Page
         arrParametros.Add(new applyWeb.Data.Parametro("@User", pIDusuario));
         arrParametros.Add(new applyWeb.Data.Parametro("@Status", pStatus));
         arrParametros.Add(new applyWeb.Data.Parametro("@text", ptext));
-        DataSet dsAlumnos = objAdministracion.ExecuteSP("OBTENER_LISTADO_ALUMNOS_SEARCH", arrParametros);
+        DataSet dsAlumnos = objAdministracion.ExecuteSP("Obtener_Listado_Alumnos_Search", arrParametros);
         gvAlumnos.DataSource = dsAlumnos;
         gvAlumnos.DataBind();
     }
@@ -245,7 +246,7 @@ public partial class ListadoAdministracion : System.Web.UI.Page
         arrParametros.Add(new applyWeb.Data.Parametro("@Rol", pRol));
         arrParametros.Add(new applyWeb.Data.Parametro("@User", pIDusuario));
         arrParametros.Add(new applyWeb.Data.Parametro("@Status", pStatus));
-        DataSet dsAlumnos = objAdministracion.ExecuteSP("OBTENER_LISTADO_ALUMNOS", arrParametros);
+        DataSet dsAlumnos = objAdministracion.ExecuteSP("Obtener_Listado_Alumnos", arrParametros);
         GridView1.DataSource = dsAlumnos;
         GridView1.DataBind();
 

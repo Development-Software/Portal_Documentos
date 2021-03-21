@@ -15,7 +15,7 @@ using System.Globalization;
 
 public partial class ListadoExpediente : System.Web.UI.Page
 {
-    applyWeb.Data.Data objExpediente = new applyWeb.Data.Data(System.Configuration.ConfigurationManager.ConnectionStrings["sqlConnectionString"].ConnectionString);
+    applyWeb.Data.Data objExpediente = new applyWeb.Data.Data(System.Configuration.ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
     string id_page_ex;
     string id_page;
     string id_page_reload;
@@ -207,7 +207,7 @@ public partial class ListadoExpediente : System.Web.UI.Page
     private DataTable GetData(SqlCommand cmd)
     {
         DataTable dt = new DataTable();
-        String strConnString = System.Configuration.ConfigurationManager.ConnectionStrings["sqlConnectionString"].ConnectionString;
+        String strConnString = System.Configuration.ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString;
         SqlConnection con = new SqlConnection(strConnString);
         SqlDataAdapter sda = new SqlDataAdapter();
         cmd.CommandType = CommandType.Text;
@@ -308,7 +308,7 @@ public partial class ListadoExpediente : System.Web.UI.Page
 
     protected void permisos()
     {
-        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["sqlConnectionString"].ConnectionString);
+        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
         ConexionSql.Open();
         string strQuery = "SELECT DISTINCT A.IDPrivilegio,b.Permiso FROM Permisos_App_Rol A INNER JOIN Permisos_App B ON A.IDPrivilegio=B.IDPrivilegio INNER JOIN Rol C ON A.IDRol=C.IDRol WHERE B.IDMenu=3 AND B.IDSubMenu=1 AND C.Nombre='" + Session["Rol"].ToString() + "'";
         SqlCommand cmd = new SqlCommand(strQuery, ConexionSql);
@@ -336,7 +336,7 @@ public partial class ListadoExpediente : System.Web.UI.Page
                           "JOIN TipoDocumento TD ON TD.IDTipoDocumento = TDA.IDTipoDocumento " +
                           "JOIN Alumno AL ON AL.IDArea = TDA.IDArea AND AL.CodigoProcedencia = TDA.IDProcedencia AND AL.CodigoTipoIngreso = TDA.IDTipoIngreso AND AL.IDNivel=TDA.IDNivel  AND AL.IDModalidad=TDA.IDModalidad AND AL.IDAlumno = '" + IDAlumno + "' " +
                           "WHERE TD.id_banner NOT IN ('RVAL','SVAL')";
-        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["sqlConnectionString"].ConnectionString);
+        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
         SqlCommand cmd = new SqlCommand(strQuery);
         DataTable dt = GetData(cmd);
         porcentaje = (Convert.ToDouble(dt.Rows[0]["Entregados"]) * 100) / Convert.ToDouble(dt.Rows[0]["Documentos"]);

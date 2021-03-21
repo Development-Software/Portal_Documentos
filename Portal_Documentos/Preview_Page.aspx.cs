@@ -18,7 +18,7 @@ using System.Web.UI.WebControls;
 public partial class Preview_Page : System.Web.UI.Page
 {
     public string ruta_tmp;
-    applyWeb.Data.Data objAreas = new applyWeb.Data.Data(System.Configuration.ConfigurationManager.ConnectionStrings["sqlConnectionString"].ConnectionString);
+    applyWeb.Data.Data objAreas = new applyWeb.Data.Data(System.Configuration.ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
     protected void Page_Load(object sender, EventArgs e)
     {
         //carga_estatus();
@@ -110,7 +110,7 @@ public partial class Preview_Page : System.Web.UI.Page
 
     protected void carga_estatus()
     {
-        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["sqlConnectionString"].ConnectionString);
+        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
         string Query="";
         string IDTipoDocumento=Convert.ToString(Request.QueryString["IDTipoDocumento"]);
 
@@ -211,7 +211,7 @@ public partial class Preview_Page : System.Web.UI.Page
         DataTable dt = GetData(cmd);
 
         
-        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["sqlConnectionString"].ConnectionString);
+        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
         SqlCommand cmd1 = new SqlCommand("Actualiza_Estatus_Comentario", ConexionSql);
         cmd1.Parameters.Add("@IDDocumento", SqlDbType.Int).Value = IDDocumento;
         cmd1.Parameters.Add("@Comentario", SqlDbType.VarChar).Value = comentarios;
@@ -332,7 +332,7 @@ public partial class Preview_Page : System.Web.UI.Page
     private DataTable GetData(SqlCommand cmd)
     {
         DataTable dt = new DataTable();
-        String strConnString = System.Configuration.ConfigurationManager.ConnectionStrings["sqlConnectionString"].ConnectionString;
+        String strConnString = System.Configuration.ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString;
         SqlConnection con = new SqlConnection(strConnString);
         SqlDataAdapter sda = new SqlDataAdapter();
         cmd.CommandType = CommandType.Text;
@@ -510,7 +510,7 @@ public partial class Preview_Page : System.Web.UI.Page
                  IDAlumno = dt.Rows[0]["IDAlumno"].ToString();
             }
         string strQuery = "SELECT DISTINCT IDNotificacion,IDEstatus,Descripcion,Tipo_Notificacion, Asunto_correo,Cuerpo_correo FROM Configuracion_Notificaciones WHERE Dias=0 AND IDEstatus=@IDEstatus";
-        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["sqlConnectionString"].ConnectionString);
+        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
         SqlCommand cmd = new SqlCommand(strQuery);
         try
         {
@@ -563,7 +563,7 @@ public partial class Preview_Page : System.Web.UI.Page
     protected void obtener_plantilla_correo(int IDNotificacion,string IDEstatus,string IDDocumento, string IDAlumno, string comentarios)
     {
         
-        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["sqlConnectionString"].ConnectionString);
+        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
 
         SqlCommand cmd = new SqlCommand("Creacion_correo", ConexionSql);
         cmd.CommandType = CommandType.StoredProcedure;
@@ -624,7 +624,7 @@ public partial class Preview_Page : System.Web.UI.Page
     protected void obtener_plantilla_correo_admin(int IDNotificacion, string IDEstatus, string IDDocumento, string IDAlumno, string User)
     {
 
-        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["sqlConnectionString"].ConnectionString);
+        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
 
         SqlCommand cmd = new SqlCommand("Creacion_correo_admin", ConexionSql);
         cmd.CommandType = CommandType.StoredProcedure;
@@ -852,7 +852,7 @@ public partial class Preview_Page : System.Web.UI.Page
         DataTable dt = GetData(cmd);
 
 
-        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["sqlConnectionString"].ConnectionString);
+        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
         SqlCommand cmd1 = new SqlCommand();
         cmd1.CommandText = "INSERT INTO Logs (Proceso,Descripcion,Usuario,Fecha) VALUES ('Cambio de estatus','Se cambio el estatus del Documento con ID: '+@IDDocumento+' al estatus: '+@Estatus+' del alumno: '+@IDAlumno,@UserLog,@fecha_mod)";
         cmd1.Parameters.Add("@IDAlumno", SqlDbType.VarChar).Value = IDAlumno;
@@ -869,7 +869,7 @@ public partial class Preview_Page : System.Web.UI.Page
     }
     protected void permisos()
     {
-        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["sqlConnectionString"].ConnectionString);
+        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
         ConexionSql.Open();
         string strQuery = "SELECT DISTINCT A.IDPrivilegio,b.Permiso FROM Permisos_App_Rol A INNER JOIN Permisos_App B ON A.IDPrivilegio=B.IDPrivilegio INNER JOIN Rol C ON A.IDRol=C.IDRol WHERE B.IDMenu=3 AND B.IDSubMenu=1 AND C.Nombre='" + Session["Rol"].ToString() + "'";
         SqlCommand cmd = new SqlCommand(strQuery, ConexionSql);

@@ -49,7 +49,7 @@ public partial class Video_F : System.Web.UI.Page
 
     protected void checkbox_checked()
     {
-        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["sqlConnectionString"].ConnectionString);
+        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
         string strQuery = "";
         strQuery = "UPDATE Alumno SET video='1' WHERE IDAlumno='" + Session["CASNetworkID"].ToString() + "'";
         ConexionSql.Open();
@@ -58,7 +58,7 @@ public partial class Video_F : System.Web.UI.Page
     }
     protected void checkbox_no_checked()
     {
-        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["sqlConnectionString"].ConnectionString);
+        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
         string strQuery = "";
         strQuery = "UPDATE Alumno SET video='0' WHERE IDAlumno='" + Session["CASNetworkID"].ToString() + "'";
         ConexionSql.Open();

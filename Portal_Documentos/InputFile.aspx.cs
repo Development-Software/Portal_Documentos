@@ -42,7 +42,7 @@ public partial class InputFile : System.Web.UI.Page
         else {
             try
             {
-                SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["sqlConnectionString"].ConnectionString);
+                SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
                 string strQuery = "SELECT LOWER('\"'+REPLACE(Formato,',','\",\"')+'\"')Formato,TamanoMinimo,TamanoMaximo FROM TipoDocumento WHERE IDTipoDocumento='" + IDTipoDocumento + "'";
                 ConexionSql.Open();
                 SqlDataAdapter sqladapter = new SqlDataAdapter();

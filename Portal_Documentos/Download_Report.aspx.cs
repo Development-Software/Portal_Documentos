@@ -19,7 +19,7 @@ public partial class Download_Report : System.Web.UI.Page
 
     protected void carga_reporte_export()
     {
-        String strConnString = System.Configuration.ConfigurationManager.ConnectionStrings["sqlConnectionString"].ConnectionString;
+        String strConnString = System.Configuration.ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString;
         SqlConnection con = new SqlConnection(strConnString);
         SqlCommand cmd = new SqlCommand();
         cmd.CommandType = CommandType.StoredProcedure;

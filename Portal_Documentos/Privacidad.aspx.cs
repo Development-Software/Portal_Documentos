@@ -12,7 +12,7 @@ using System.Web.UI.WebControls;
 
 public partial class Privacidad : System.Web.UI.Page
 {
-    applyWeb.Data.Data objAlumno = new applyWeb.Data.Data(System.Configuration.ConfigurationManager.ConnectionStrings["sqlConnectionString"].ConnectionString);
+    applyWeb.Data.Data objAlumno = new applyWeb.Data.Data(System.Configuration.ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
     public string Aviso = @"<embed src=\"" http://www3.ula.edu.mx/UAT/Repositorio_UAT/Content/Otros/Aviso_Privacidad.pdf#toolbar=0"" width=""100%"" height=""500px"">";
     
     protected void Page_Load(object sender, EventArgs e)
@@ -50,7 +50,7 @@ public partial class Privacidad : System.Web.UI.Page
     private DataTable GetData(SqlCommand cmd)
     {
         DataTable dt = new DataTable();
-        String strConnString = System.Configuration.ConfigurationManager.ConnectionStrings["sqlConnectionString"].ConnectionString;
+        String strConnString = System.Configuration.ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString;
         SqlConnection con = new SqlConnection(strConnString);
         SqlDataAdapter sda = new SqlDataAdapter();
         cmd.CommandType = CommandType.Text;

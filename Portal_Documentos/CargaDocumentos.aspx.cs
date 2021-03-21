@@ -18,7 +18,7 @@ using System.Web.Configuration;
 
 public partial class CargaDocumentos : System.Web.UI.Page
 {
-    applyWeb.Data.Data objExpediente = new applyWeb.Data.Data(System.Configuration.ConfigurationManager.ConnectionStrings["sqlConnectionString"].ConnectionString);
+    applyWeb.Data.Data objExpediente = new applyWeb.Data.Data(System.Configuration.ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
     public double porcentaje;
 
     protected void Page_Load(object sender, EventArgs e)
@@ -40,7 +40,7 @@ public partial class CargaDocumentos : System.Web.UI.Page
             
                 if (valor == "1")
                 {
-                    SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["sqlConnectionString"].ConnectionString);
+                    SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
                     string strQuery = "";
                     strQuery = "UPDATE Alumno SET ContratoAceptado='" + valor + "' WHERE IDAlumno='" + Session["CASNetworkID"].ToString() + "'";
 
@@ -232,7 +232,7 @@ public partial class CargaDocumentos : System.Web.UI.Page
     private DataTable GetData(SqlCommand cmd)
     {
         DataTable dt = new DataTable();
-        String strConnString = System.Configuration.ConfigurationManager.ConnectionStrings["sqlConnectionString"].ConnectionString;
+        String strConnString = System.Configuration.ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString;
         SqlConnection con = new SqlConnection(strConnString);
         SqlDataAdapter sda = new SqlDataAdapter();
         cmd.CommandType = CommandType.Text;
@@ -286,7 +286,7 @@ public partial class CargaDocumentos : System.Web.UI.Page
                           "JOIN TipoDocumento TD ON TD.IDTipoDocumento = TDA.IDTipoDocumento " +
                           "JOIN Alumno AL ON AL.IDArea = TDA.IDArea AND AL.CodigoProcedencia = TDA.IDProcedencia AND AL.CodigoTipoIngreso = TDA.IDTipoIngreso AND AL.IDNivel=TDA.IDNivel  AND AL.IDModalidad=TDA.IDModalidad AND AL.IDAlumno = '" + Session["CASNetworkID"].ToString() + "' " +
                           "WHERE TD.id_banner NOT IN ('RVAL','SVAL')";
-        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["sqlConnectionString"].ConnectionString);
+        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
         SqlCommand cmd = new SqlCommand(strQuery);
         DataTable dt = GetData(cmd);
         porcentaje = (Convert.ToDouble(dt.Rows[0]["Entregados"]) * 100) / Convert.ToDouble(dt.Rows[0]["Documentos"]);

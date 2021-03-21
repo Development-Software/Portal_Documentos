@@ -41,7 +41,7 @@ public partial class Usuarios : System.Web.UI.Page
         System.Threading.Thread.Sleep(50);
 
         SqlConnection ConexionSql =
-                 new SqlConnection(ConfigurationManager.ConnectionStrings["sqlConnectionString"].ConnectionString);
+                 new SqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
 
         //Obtiene si el estudiante ya tiene registro
 
@@ -113,7 +113,7 @@ public partial class Usuarios : System.Web.UI.Page
 
         else
         {
-            SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["sqlConnectionString"].ConnectionString);
+            SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
             ConexionSql.Open();
 
             string strvalida = "SELECT COUNT(*) FROM Usuario WHERE Login='" + Txtuser.Text + "'";
@@ -170,7 +170,7 @@ public partial class Usuarios : System.Web.UI.Page
             string strBorra = "DELETE FROM Roles_Usuarios WHERE IDUsuario = (SELECT IDUsuario FROM Usuario WHERE Login='" + Txtuser.Text + "')";
             string strBorra_1 = "DELETE FROM Usuario WHERE Login='" + Txtuser.Text + "'";
             string strlog = "INSERT INTO Logs (Proceso,Descripcion,Usuario,Fecha) VALUES ('Eliminar Usuario','Se elimino al usuario "+ Txtuser.Text+"','"+Session["user"].ToString()+"','"+DateTime.Now.ToString()+"')";
-            SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["sqlConnectionString"].ConnectionString);
+            SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
 
             ConexionSql.Open();
 
@@ -196,7 +196,7 @@ public partial class Usuarios : System.Web.UI.Page
         GridViewRow row = Users.SelectedRow;
 
         SqlConnection ConexionSql =
-                       new SqlConnection(ConfigurationManager.ConnectionStrings["sqlConnectionString"].ConnectionString);
+                       new SqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
         string strQuery = "";
         strQuery = "SELECT Nombre,Email FROM Usuario WHERE Login='" + row.Cells[1].Text.ToString() + "'";
 
@@ -251,7 +251,7 @@ public partial class Usuarios : System.Web.UI.Page
         }
         else
         {
-            SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["sqlConnectionString"].ConnectionString);
+            SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
             ConexionSql.Open();
 
             SqlCommand cmd = new SqlCommand("SP_update_user", ConexionSql);
@@ -294,7 +294,7 @@ public partial class Usuarios : System.Web.UI.Page
     }
     protected void permisos()
     {
-        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["sqlConnectionString"].ConnectionString);
+        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
         ConexionSql.Open();
         string strQuery = "SELECT DISTINCT A.IDPrivilegio,b.Permiso FROM Permisos_App_Rol A INNER JOIN Permisos_App B ON A.IDPrivilegio=B.IDPrivilegio INNER JOIN Rol C ON A.IDRol=C.IDRol WHERE B.IDMenu=2 AND B.IDSubMenu=3 AND C.Nombre='" + Session["Rol"].ToString() + "'";
         SqlCommand cmd = new SqlCommand(strQuery, ConexionSql);

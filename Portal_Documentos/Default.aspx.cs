@@ -11,7 +11,7 @@ using System.Text.RegularExpressions;
 
 public partial class _Default : System.Web.UI.Page
 {
-    applyWeb.Data.Data objUsuarios = new applyWeb.Data.Data(System.Configuration.ConfigurationManager.ConnectionStrings["sqlConnectionString"].ConnectionString);
+    applyWeb.Data.Data objUsuarios = new applyWeb.Data.Data(System.Configuration.ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
 
 
     protected void Page_Load(object sender, EventArgs e)

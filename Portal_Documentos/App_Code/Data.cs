@@ -9,6 +9,7 @@ using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
 using System.Collections;
 using System.Data.SqlClient;
+using MySql.Data.MySqlClient;
 
 namespace applyWeb.Data
 {
@@ -22,11 +23,11 @@ namespace applyWeb.Data
 
         public int ExecuteInsertSP(string pstrName, ArrayList parrParameters)
         {
-            using (SqlConnection objCnn = new SqlConnection(mstrConnectionString))
+            using (MySqlConnection objCnn = new MySqlConnection(mstrConnectionString))
             {
 
                 //SqlConnection objCnn = new SqlConnection(mstrConnectionString);
-                SqlCommand objCmd = new SqlCommand();
+                MySqlCommand objCmd = new MySqlCommand();
 
                 try
                 {
@@ -37,15 +38,16 @@ namespace applyWeb.Data
 
                     foreach (Parametro objParam in parrParameters)
                     {
-                        SqlParameter objNewParam = new SqlParameter(objParam.Nombre, objParam.Valor);
+                        MySqlParameter objNewParam = new MySqlParameter(objParam.Nombre, objParam.Valor);
                         objCmd.Parameters.Add(objNewParam);
                     }
 
                     return objCmd.ExecuteNonQuery();
 
                 }
-                catch
+                catch (Exception ex)
                 {
+                    string str = (ex.Message);
                     return 0;
                 }
                 finally
@@ -61,9 +63,9 @@ namespace applyWeb.Data
         {
             //using (SqlConnection objCnn = new SqlConnection(mstrConnectionString))
             //{
-            SqlConnection objCnn = new SqlConnection(mstrConnectionString);
-            SqlCommand objCmd = new SqlCommand();
-            SqlDataAdapter objDA = new SqlDataAdapter();
+            MySqlConnection objCnn = new MySqlConnection(mstrConnectionString);
+            MySqlCommand objCmd = new MySqlCommand();
+            MySqlDataAdapter objDA = new MySqlDataAdapter();
 
 
             try
@@ -75,7 +77,7 @@ namespace applyWeb.Data
 
                 foreach (Parametro objParam in parrParameters)
                 {
-                    SqlParameter objNewParam = new SqlParameter(objParam.Nombre, objParam.Valor);
+                    MySqlParameter objNewParam = new MySqlParameter(objParam.Nombre, objParam.Valor);
                     objCmd.Parameters.Add(objNewParam);
                 }
 
@@ -97,10 +99,10 @@ namespace applyWeb.Data
 
         public DataSet ExecuteSP(string pstrName, ArrayList parrParameters)
         {
-            using (SqlConnection objCnn = new SqlConnection(mstrConnectionString))
+            using (MySqlConnection objCnn = new MySqlConnection(mstrConnectionString))
             {
-                SqlCommand objCmd = new SqlCommand();
-                SqlDataAdapter objDA = new SqlDataAdapter();
+                MySqlCommand objCmd = new MySqlCommand();
+                MySqlDataAdapter objDA = new MySqlDataAdapter();
                 DataSet dsReturn = new DataSet();
 
                 try
@@ -112,7 +114,7 @@ namespace applyWeb.Data
 
                     foreach (Parametro objParam in parrParameters)
                     {
-                        SqlParameter objNewParam = new SqlParameter(objParam.Nombre, objParam.Valor);
+                        MySqlParameter objNewParam = new MySqlParameter(objParam.Nombre, objParam.Valor);
                         objCmd.Parameters.Add(objNewParam);
                     }
 

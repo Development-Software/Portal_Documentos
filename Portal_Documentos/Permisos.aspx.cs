@@ -13,10 +13,11 @@ using System.Drawing;
 using CheckBox = System.Web.UI.WebControls.CheckBox;
 using TextBox = System.Web.UI.WebControls.TextBox;
 using System.Web.Configuration;
+using MySql.Data.MySqlClient;
 
 public partial class Permisos : System.Web.UI.Page
 {
-    applyWeb.Data.Data objAreas = new applyWeb.Data.Data(System.Configuration.ConfigurationManager.ConnectionStrings["sqlConnectionString"].ConnectionString);
+    applyWeb.Data.Data objAreas = new applyWeb.Data.Data(System.Configuration.ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
     protected void Page_Load(object sender, EventArgs e)
     {
         string valor = Convert.ToString(Request.QueryString["rol"]);
@@ -230,16 +231,14 @@ public partial class Permisos : System.Web.UI.Page
 
             string IDCampus = lstCampus.SelectedItem.Value.ToString();
             ArrayList arrParametros = new ArrayList();
-            arrParametros.Add(new applyWeb.Data.Parametro("@IDRol", IDRol));
-            arrParametros.Add(new applyWeb.Data.Parametro("@IDCampus", IDCampus));
+            arrParametros.Add(new applyWeb.Data.Parametro("@IDRol_in", IDRol));
+            arrParametros.Add(new applyWeb.Data.Parametro("@IDCampus_in", IDCampus));
             DataSet dsUsuario_C = objAreas.ExecuteSP("Obtener_ListaUsuario_C", arrParametros);
             lstUsuarios.DataSource = dsUsuario_C;
             lstUsuarios.DataTextField = "Nombre";
             lstUsuarios.DataValueField = "IDUsuario";
             lstUsuarios.DataBind();
     }
-
-
     protected void cmdAgregar_Click(object sender, ImageClickEventArgs e)
     {
         for (int x = 0; x < lstCampus.GetSelectedIndices().Length; x++)
@@ -254,11 +253,10 @@ public partial class Permisos : System.Web.UI.Page
 
                 string user_log = Session["user"].ToString();
 
-                arrParam.Add(new applyWeb.Data.Parametro("@IDCampus", IDCampus));
-                arrParam.Add(new applyWeb.Data.Parametro("@IDUsuario", IDUsuario));
-                arrParam.Add(new applyWeb.Data.Parametro("@IDRol", IDRol));
+                arrParam.Add(new applyWeb.Data.Parametro("@IDCampus_in", IDCampus));
+                arrParam.Add(new applyWeb.Data.Parametro("@IDUsuario_in", IDUsuario));
+                arrParam.Add(new applyWeb.Data.Parametro("@IDRol_in", IDRol));
                 arrParam.Add(new applyWeb.Data.Parametro("@UserLog", user_log));
-                arrParam.Add(new applyWeb.Data.Parametro("@fecha_mod", DateTime.Now.ToString()));
                 objAreas.ExecuteInsertSP("Insertar_Permisos_Campus", arrParam);
             }
         }
@@ -280,12 +278,10 @@ public partial class Permisos : System.Web.UI.Page
                 string IDRol = ddlRol.SelectedItem.Value.ToString();
                 string user_log = Session["user"].ToString();
 
-                arrParam.Add(new applyWeb.Data.Parametro("@IDCampus", IDCampus));
-                arrParam.Add(new applyWeb.Data.Parametro("@IDUsuario", IDUsuario));
-                arrParam.Add(new applyWeb.Data.Parametro("@IDRol", IDRol));
+                arrParam.Add(new applyWeb.Data.Parametro("@IDCampus_in", IDCampus));
+                arrParam.Add(new applyWeb.Data.Parametro("@IDUsuario_in", IDUsuario));
+                arrParam.Add(new applyWeb.Data.Parametro("@IDRol_in", IDRol));
                 arrParam.Add(new applyWeb.Data.Parametro("@UserLog", user_log));
-                arrParam.Add(new applyWeb.Data.Parametro("@fecha_mod", DateTime.Now.ToString()));
-
                 objAreas.ExecuteInsertSP("Eliminar_Permisos_Campus", arrParam);
             }
         }
@@ -323,8 +319,8 @@ public partial class Permisos : System.Web.UI.Page
         string IDRol = ddlRol.SelectedItem.Value.ToString();
         string IDNivel = ListNiveles.SelectedItem.Value.ToString();
         ArrayList arrParametros = new ArrayList();
-        arrParametros.Add(new applyWeb.Data.Parametro("@IDRol", IDRol));
-        arrParametros.Add(new applyWeb.Data.Parametro("@IDNivel", IDNivel));
+        arrParametros.Add(new applyWeb.Data.Parametro("@IDRol_in", IDRol));
+        arrParametros.Add(new applyWeb.Data.Parametro("@IDNivel_in", IDNivel));
         DataSet dsUsuariosNivel = objAreas.ExecuteSP("ObtenerUsuariosNivel", arrParametros);
         ListUsuariosNivel.DataSource = dsUsuariosNivel;
         ListUsuariosNivel.DataTextField = "Nombre";
@@ -337,8 +333,8 @@ public partial class Permisos : System.Web.UI.Page
         string IDRol = ddlRol.SelectedItem.Value.ToString();
         string IDNivel = ListNiveles.SelectedItem.Value.ToString();
         ArrayList arrParametros = new ArrayList();
-        arrParametros.Add(new applyWeb.Data.Parametro("@IDRol", IDRol));
-        arrParametros.Add(new applyWeb.Data.Parametro("@IDNivel", IDNivel));
+        arrParametros.Add(new applyWeb.Data.Parametro("@IDRol_in", IDRol));
+        arrParametros.Add(new applyWeb.Data.Parametro("@IDNivel_in", IDNivel));
         DataSet dsUsuario_N = objAreas.ExecuteSP("Obtener_ListaUsuario_N", arrParametros);
         ListUsuarios.DataSource = dsUsuario_N;
         ListUsuarios.DataTextField = "Nombre";
@@ -360,11 +356,10 @@ public partial class Permisos : System.Web.UI.Page
                 string IDRol = ddlRol.SelectedItem.Value.ToString();
                 string user_log = Session["user"].ToString();
 
-                arrParam.Add(new applyWeb.Data.Parametro("@IDNivel", IDNivel));
-                arrParam.Add(new applyWeb.Data.Parametro("@IDUsuario", IDUsuario));
-                arrParam.Add(new applyWeb.Data.Parametro("@IDRol", IDRol));
+                arrParam.Add(new applyWeb.Data.Parametro("@IDNivel_in", IDNivel));
+                arrParam.Add(new applyWeb.Data.Parametro("@IDUsuario_in", IDUsuario));
+                arrParam.Add(new applyWeb.Data.Parametro("@IDRol_in", IDRol));
                 arrParam.Add(new applyWeb.Data.Parametro("@UserLog", user_log));
-                arrParam.Add(new applyWeb.Data.Parametro("@fecha_mod", DateTime.Now.ToString()));
                 objAreas.ExecuteInsertSP("Insertar_Permisos_Niveles", arrParam);
             }
         }
@@ -385,11 +380,10 @@ public partial class Permisos : System.Web.UI.Page
                 string IDRol = ddlRol.SelectedItem.Value.ToString();
                 string user_log = Session["user"].ToString();
 
-                arrParam.Add(new applyWeb.Data.Parametro("@IDNivel", IDNivel));
-                arrParam.Add(new applyWeb.Data.Parametro("@IDUsuario", IDUsuario));
-                arrParam.Add(new applyWeb.Data.Parametro("@IDRol", IDRol));
+                arrParam.Add(new applyWeb.Data.Parametro("@IDNivel_in", IDNivel));
+                arrParam.Add(new applyWeb.Data.Parametro("@IDUsuario_in", IDUsuario));
+                arrParam.Add(new applyWeb.Data.Parametro("@IDRol_in", IDRol));
                 arrParam.Add(new applyWeb.Data.Parametro("@UserLog", user_log));
-                arrParam.Add(new applyWeb.Data.Parametro("@fecha_mod", DateTime.Now.ToString()));
                 objAreas.ExecuteInsertSP("Eliminar_Permisos_Niveles", arrParam);
             }
         }
@@ -429,8 +423,8 @@ public partial class Permisos : System.Web.UI.Page
         string IDRol = ddlRol.SelectedItem.Value.ToString();
         string IDTipoDocumento = ListDocumentos.SelectedItem.Value.ToString();
         ArrayList arrParametros = new ArrayList();
-        arrParametros.Add(new applyWeb.Data.Parametro("@IDRol", IDRol));
-        arrParametros.Add(new applyWeb.Data.Parametro("@IDTipoDocumento", IDTipoDocumento));
+        arrParametros.Add(new applyWeb.Data.Parametro("@IDRol_in", IDRol));
+        arrParametros.Add(new applyWeb.Data.Parametro("@IDTipoDocumento_in", IDTipoDocumento));
         DataSet dsUsuariosDoc = objAreas.ExecuteSP("ObtenerUsuariosDocumentos", arrParametros);
         ListUsuariosDocumentos.DataSource = dsUsuariosDoc;
         ListUsuariosDocumentos.DataTextField = "Nombre";
@@ -443,8 +437,8 @@ public partial class Permisos : System.Web.UI.Page
         string IDRol = ddlRol.SelectedItem.Value.ToString();
         string IDTipoDocumento = ListDocumentos.SelectedItem.Value.ToString();
         ArrayList arrParametros = new ArrayList();
-        arrParametros.Add(new applyWeb.Data.Parametro("@IDRol", IDRol));
-        arrParametros.Add(new applyWeb.Data.Parametro("@IDTipoDocumento", IDTipoDocumento));
+        arrParametros.Add(new applyWeb.Data.Parametro("@IDRol_in", IDRol));
+        arrParametros.Add(new applyWeb.Data.Parametro("@IDTipoDocumento_in", IDTipoDocumento));
         DataSet dsUsuario_D = objAreas.ExecuteSP("Obtener_ListaUsuario_D", arrParametros);
         ListUsuarios_1.DataSource = dsUsuario_D;
         ListUsuarios_1.DataTextField = "Nombre";
@@ -465,11 +459,10 @@ public partial class Permisos : System.Web.UI.Page
                 string IDRol = ddlRol.SelectedItem.Value.ToString();
                 string user_log = Session["user"].ToString();
 
-                arrParam.Add(new applyWeb.Data.Parametro("@IDTipoDocumento", IDTipoDocumento));
-                arrParam.Add(new applyWeb.Data.Parametro("@IDUsuario", IDUsuario));
-                arrParam.Add(new applyWeb.Data.Parametro("@IDRol", IDRol));
+                arrParam.Add(new applyWeb.Data.Parametro("@IDTipoDocumento_in", IDTipoDocumento));
+                arrParam.Add(new applyWeb.Data.Parametro("@IDUsuario_in", IDUsuario));
+                arrParam.Add(new applyWeb.Data.Parametro("@IDRol_in", IDRol));
                 arrParam.Add(new applyWeb.Data.Parametro("@UserLog", user_log));
-                arrParam.Add(new applyWeb.Data.Parametro("@fecha_mod", DateTime.Now.ToString()));
                 objAreas.ExecuteInsertSP("Insertar_Permisos_Documentos", arrParam);
             }
         }
@@ -490,11 +483,10 @@ public partial class Permisos : System.Web.UI.Page
                 string IDRol = ddlRol.SelectedItem.Value.ToString();
                 string user_log = Session["user"].ToString();
 
-                arrParam.Add(new applyWeb.Data.Parametro("@IDTipoDocumento", IDTipoDocumento));
-                arrParam.Add(new applyWeb.Data.Parametro("@IDUsuario", IDUsuario));
-                arrParam.Add(new applyWeb.Data.Parametro("@IDRol", IDRol));
+                arrParam.Add(new applyWeb.Data.Parametro("@IDTipoDocumento_in", IDTipoDocumento));
+                arrParam.Add(new applyWeb.Data.Parametro("@IDUsuario_in", IDUsuario));
+                arrParam.Add(new applyWeb.Data.Parametro("@IDRol_in", IDRol));
                 arrParam.Add(new applyWeb.Data.Parametro("@UserLog", user_log));
-                arrParam.Add(new applyWeb.Data.Parametro("@fecha_mod", DateTime.Now.ToString()));
 
                 objAreas.ExecuteInsertSP("Eliminar_Permisos_Documentos", arrParam);
             }
@@ -507,11 +499,11 @@ public partial class Permisos : System.Web.UI.Page
     protected void permisos()
     {
         
-        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["sqlConnectionString"].ConnectionString);
-        ConexionSql.Open();
+        MySqlConnection ConexionMySql = new MySqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
+        ConexionMySql.Open();
         string strQuery = "SELECT DISTINCT A.IDPrivilegio,b.Permiso FROM Permisos_App_Rol A INNER JOIN Permisos_App B ON A.IDPrivilegio=B.IDPrivilegio INNER JOIN Rol C ON A.IDRol=C.IDRol WHERE B.IDMenu=2 AND B.IDSubMenu=4 AND C.Nombre='" + Session["Rol"].ToString() + "'";
-        SqlCommand cmd = new SqlCommand(strQuery, ConexionSql);
-        SqlDataReader dr = cmd.ExecuteReader();
+        MySqlCommand cmd = new MySqlCommand(strQuery, ConexionMySql);
+        MySqlDataReader dr = cmd.ExecuteReader();
         while (dr.Read())
         {
             int IDprivilegio = dr.GetInt32(0);
@@ -529,30 +521,30 @@ public partial class Permisos : System.Web.UI.Page
                 
             }
         }
-        ConexionSql.Close();
+        ConexionMySql.Close();
     }
 
     private void CargarPermisos_App()
     {
-        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["sqlConnectionString"].ConnectionString);
+        MySqlConnection ConexionMySql = new MySqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
 
         string strQueryEsc = "SELECT * FROM ( " +
-                             "SELECT DISTINCT IDPrivilegio,Menu Permiso,Descripcion FROM Permisos_App WHERE IDSubMenu = 1 AND IDPermiso = 1" +
+                             "SELECT DISTINCT IDPrivilegio,Menu Permiso,Descripcion FROM Permisos_App WHERE IDSubMenu = 1 AND IDPermiso = 1 " +
                              "UNION " +
                              "SELECT DISTINCT IDPrivilegio,Sub_Menu Permiso,Descripcion FROM Permisos_App WHERE IDPrivilegio NOT IN(SELECT DISTINCT IDPrivilegio FROM Permisos_App WHERE IDSubMenu = 1 AND IDPermiso = 1) AND IDPermiso = 1 " +
                              "UNION " +
                              "SELECT DISTINCT IDPrivilegio,Permiso Permiso,Descripcion FROM Permisos_App WHERE IDPrivilegio NOT IN(SELECT DISTINCT IDPrivilegio FROM Permisos_App WHERE IDSubMenu = 1 AND IDPermiso = 1) AND IDPermiso<>1)A " +
                              "ORDER BY 1";
 
-        ConexionSql.Open();
-        SqlDataAdapter dataadapter = new SqlDataAdapter(strQueryEsc, ConexionSql);
+        ConexionMySql.Open();
+        MySqlDataAdapter dataadapter = new MySqlDataAdapter(strQueryEsc, ConexionMySql);
         DataSet ds = new DataSet();
         dataadapter.Fill(ds, "Permisos_App");
         Permisos_App.DataSource = ds;
         Permisos_App.DataBind();
         Permisos_App.DataMember = "Permisos_App";
 
-        ConexionSql.Close();
+        ConexionMySql.Close();
         style_grid();
         ocultar_perm_desplegables();
         
@@ -822,18 +814,18 @@ public partial class Permisos : System.Web.UI.Page
 
     protected void consulta_permisos_user()
     {
-        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["sqlConnectionString"].ConnectionString);
-        ConexionSql.Open();
+        MySqlConnection ConexionMySql = new MySqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
+        ConexionMySql.Open();
         string IDRol = ddlRol.SelectedItem.Value.ToString();
 
-        string strQuery = "SELECT DISTINCT IDRol,CAST (IDPrivilegio AS VARCHAR)IDPrivilegio,CASE WHEN IDRol IS NULL THEN 'N' ELSE 'Y' END ACTIVO " +
+        string strQuery = "SELECT DISTINCT IDRol,CAST(IDPrivilegio AS CHAR)IDPrivilegio,CASE WHEN IDRol IS NULL THEN 'N' ELSE 'Y' END ACTIVO " +
                           "FROM( " +
-                          "SELECT DISTINCT A.IDRol, CAST(B.IDPrivilegio AS VARCHAR)IDPrivilegio " +
+                          "SELECT DISTINCT A.IDRol, CAST(B.IDPrivilegio AS CHAR)IDPrivilegio " +
                           "FROM(SELECT IDPrivilegio FROM Permisos_App) B " +
                           "LEFT JOIN Permisos_App_Rol A ON A.IDPrivilegio = B.IDPrivilegio AND A.IDRol = '" + IDRol + "')C " +
                           "ORDER BY 2";
-        SqlCommand cmd = new SqlCommand(strQuery, ConexionSql);
-        SqlDataReader dr = cmd.ExecuteReader();
+        MySqlCommand cmd = new MySqlCommand(strQuery, ConexionMySql);
+        MySqlDataReader dr = cmd.ExecuteReader();
 
 
         while (dr.Read())
@@ -869,7 +861,7 @@ public partial class Permisos : System.Web.UI.Page
 
 
         }
-        ConexionSql.Close();
+        ConexionMySql.Close();
     }
 
 
@@ -878,8 +870,8 @@ public partial class Permisos : System.Web.UI.Page
 
 
 
-        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["sqlConnectionString"].ConnectionString);
-        ConexionSql.Open();
+        MySqlConnection ConexionMySql = new MySqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
+        ConexionMySql.Open();
         string IDRol = ddlRol.SelectedItem.Value.ToString();
 
         foreach (GridViewRow row in Permisos_App.Rows)
@@ -890,22 +882,21 @@ public partial class Permisos : System.Web.UI.Page
             if (!chkRow.Checked)
             {
                 string strQueryValida = "SELECT DISTINCT COUNT(*) FROM Permisos_App_Rol A WHERE A.IDRol='" + IDRol + "' AND IDPrivilegio='" + IDPrivilegio + "'";
-                SqlDataAdapter sqladapter = new SqlDataAdapter();
-                SqlCommand cmd = new SqlCommand(strQueryValida, ConexionSql);
-                DataSet dssql1 = new DataSet();
-                sqladapter.SelectCommand = cmd;
-                sqladapter.Fill(dssql1);
-                sqladapter.Dispose();
+                MySqlDataAdapter MySqladapter = new MySqlDataAdapter();
+                MySqlCommand cmd = new MySqlCommand(strQueryValida, ConexionMySql);
+                DataSet dsMySql1 = new DataSet();
+                MySqladapter.SelectCommand = cmd;
+                MySqladapter.Fill(dsMySql1);
+                MySqladapter.Dispose();
                 cmd.Dispose();
 
-                if (dssql1.Tables[0].Rows[0][0].ToString() != "0")
+                if (dsMySql1.Tables[0].Rows[0][0].ToString() != "0")
                 {
                     //Insertar log de eliminación de permisos
                     ArrayList arrParametros = new ArrayList();
-                    arrParametros.Add(new applyWeb.Data.Parametro("@IDRol", IDRol));
-                    arrParametros.Add(new applyWeb.Data.Parametro("@IDPrivilegio", IDPrivilegio));
+                    arrParametros.Add(new applyWeb.Data.Parametro("@IDRol_in", IDRol));
+                    arrParametros.Add(new applyWeb.Data.Parametro("@IDPrivilegio_in", IDPrivilegio));
                     arrParametros.Add(new applyWeb.Data.Parametro("@UserLog", Session["User"].ToString()));
-                    arrParametros.Add(new applyWeb.Data.Parametro("@fecha_mod", DateTime.Now.ToString()));
                     DataSet dsUsuario_D = objAreas.ExecuteSP("Eliminar_Permisos_Rol", arrParametros);
 
                 }
@@ -914,10 +905,9 @@ public partial class Permisos : System.Web.UI.Page
             {
                 //Insertar permisos nuevos con su log en bd
                 ArrayList arrParametros = new ArrayList();
-                arrParametros.Add(new applyWeb.Data.Parametro("@IDRol", IDRol));
-                arrParametros.Add(new applyWeb.Data.Parametro("@IDPrivilegio", IDPrivilegio));
+                arrParametros.Add(new applyWeb.Data.Parametro("@IDRol_in", IDRol));
+                arrParametros.Add(new applyWeb.Data.Parametro("@IDPrivilegio_in", IDPrivilegio));
                 arrParametros.Add(new applyWeb.Data.Parametro("@UserLog", Session["User"].ToString()));
-                arrParametros.Add(new applyWeb.Data.Parametro("@fecha_mod", DateTime.Now.ToString()));
                 DataSet dsUsuario_D = objAreas.ExecuteSP("Insertar_Permisos_Rol", arrParametros);
             }
         }
@@ -1252,8 +1242,8 @@ public partial class Permisos : System.Web.UI.Page
         string IDRol = ddlRol.SelectedItem.Value.ToString();
         string IDTipoDocumento = ListDocs.SelectedItem.Value.ToString();
         ArrayList arrParametros = new ArrayList();
-        arrParametros.Add(new applyWeb.Data.Parametro("@IDRol", IDRol));
-        arrParametros.Add(new applyWeb.Data.Parametro("@IDTipoDocumento", IDTipoDocumento));
+        arrParametros.Add(new applyWeb.Data.Parametro("@IDRol_in", IDRol));
+        arrParametros.Add(new applyWeb.Data.Parametro("@IDTipoDocumento_in", IDTipoDocumento));
         DataSet dsUsuariosDoc = objAreas.ExecuteSP("ObtenerDocumentosEstatus", arrParametros);
         ListDocE.DataSource = dsUsuariosDoc;
         ListDocE.DataTextField = "Nombre";
@@ -1265,8 +1255,8 @@ public partial class Permisos : System.Web.UI.Page
         string IDRol = ddlRol.SelectedItem.Value.ToString();
         string IDTipoDocumento = ListDocs.SelectedItem.Value.ToString();
         ArrayList arrParametros = new ArrayList();
-        arrParametros.Add(new applyWeb.Data.Parametro("@IDRol", IDRol));
-        arrParametros.Add(new applyWeb.Data.Parametro("@IDTipoDocumento", IDTipoDocumento));
+        arrParametros.Add(new applyWeb.Data.Parametro("@IDRol_in", IDRol));
+        arrParametros.Add(new applyWeb.Data.Parametro("@IDTipoDocumento_in", IDTipoDocumento));
         DataSet dsUsuario_D = objAreas.ExecuteSP("Obtener_ListaEstatus_D", arrParametros);
         ListEstatus.DataSource = dsUsuario_D;
         ListEstatus.DataTextField = "Nombre";
@@ -1286,11 +1276,10 @@ public partial class Permisos : System.Web.UI.Page
                 string IDRol = ddlRol.SelectedItem.Value.ToString();
                 string user_log = Session["user"].ToString();
 
-                arrParam.Add(new applyWeb.Data.Parametro("@IDTipoDocumento", IDTipoDocumento));
-                arrParam.Add(new applyWeb.Data.Parametro("@IDEstatus", IDUsuario));
-                arrParam.Add(new applyWeb.Data.Parametro("@IDRol", IDRol));
+                arrParam.Add(new applyWeb.Data.Parametro("@IDTipoDocumento_in", IDTipoDocumento));
+                arrParam.Add(new applyWeb.Data.Parametro("@IDEstatus_in", IDUsuario));
+                arrParam.Add(new applyWeb.Data.Parametro("@IDRol_in", IDRol));
                 arrParam.Add(new applyWeb.Data.Parametro("@UserLog", user_log));
-                arrParam.Add(new applyWeb.Data.Parametro("@fecha_mod", DateTime.Now.ToString()));
                 objAreas.ExecuteInsertSP("Insertar_Permisos_Documentos_Estatus", arrParam);
             }
         }
@@ -1312,11 +1301,10 @@ public partial class Permisos : System.Web.UI.Page
                 string IDRol = ddlRol.SelectedItem.Value.ToString();
                 string user_log = Session["user"].ToString();
 
-                arrParam.Add(new applyWeb.Data.Parametro("@IDTipoDocumento", IDTipoDocumento));
-                arrParam.Add(new applyWeb.Data.Parametro("@IDEstatus", IDUsuario));
-                arrParam.Add(new applyWeb.Data.Parametro("@IDRol", IDRol));
+                arrParam.Add(new applyWeb.Data.Parametro("@IDTipoDocumento_in", IDTipoDocumento));
+                arrParam.Add(new applyWeb.Data.Parametro("@IDEstatus_in", IDUsuario));
+                arrParam.Add(new applyWeb.Data.Parametro("@IDRol_in", IDRol));
                 arrParam.Add(new applyWeb.Data.Parametro("@UserLog", user_log));
-                arrParam.Add(new applyWeb.Data.Parametro("@fecha_mod", DateTime.Now.ToString()));
 
                 objAreas.ExecuteInsertSP("Eliminar_Permisos_Documentos_Estatus", arrParam);
             }

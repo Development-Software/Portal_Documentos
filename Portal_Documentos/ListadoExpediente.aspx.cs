@@ -12,6 +12,7 @@ using System.Configuration;
 using System.IO;
 using System.Data.SqlClient;
 using System.Globalization;
+using MySql.Data.MySqlClient;
 
 public partial class ListadoExpediente : System.Web.UI.Page
 {
@@ -98,11 +99,11 @@ public partial class ListadoExpediente : System.Web.UI.Page
     protected void CargaListaExpediente(string pIDAlumno)
     {
         ArrayList arrParametros = new ArrayList();
-        arrParametros.Add(new applyWeb.Data.Parametro("@IDAlumno", pIDAlumno));
+        arrParametros.Add(new applyWeb.Data.Parametro("@IDAlumno_in", pIDAlumno));
         arrParametros.Add(new applyWeb.Data.Parametro("@Rol", Session["Rol"].ToString()));
         //Session["AlumnoInperson"] = pIDAlumno;
 
-        DataSet dsExpedientes = objExpediente.ExecuteSP("OBTENER_LISTADO_DOCUMENTOS_ALUMNO", arrParametros);
+        DataSet dsExpedientes = objExpediente.ExecuteSP("Obtener_Listado_Documentos_Alumno", arrParametros);
         gvExpediente.DataSource = dsExpedientes;
         gvExpediente.DataBind();
     }
@@ -126,12 +127,12 @@ public partial class ListadoExpediente : System.Web.UI.Page
     protected void CargaListaExpediente_search(string pIDAlumno,string ptext)
     {
         ArrayList arrParametros = new ArrayList();
-        arrParametros.Add(new applyWeb.Data.Parametro("@IDAlumno", pIDAlumno));
+        arrParametros.Add(new applyWeb.Data.Parametro("@IDAlumno_in", pIDAlumno));
         arrParametros.Add(new applyWeb.Data.Parametro("@text", ptext));
         arrParametros.Add(new applyWeb.Data.Parametro("@Rol", Session["Rol"].ToString()));
         Session["AlumnoInperson"] = pIDAlumno;
 
-        DataSet dsExpedientes = objExpediente.ExecuteSP("OBTENER_LISTADO_DOCUMENTOS_ALUMNO_SEARCH", arrParametros);
+        DataSet dsExpedientes = objExpediente.ExecuteSP("Obtener_Listado_Documentos_Alumno_Search", arrParametros);
         gvExpediente.DataSource = dsExpedientes;
         gvExpediente.DataBind();
     }
@@ -187,10 +188,10 @@ public partial class ListadoExpediente : System.Web.UI.Page
         //string IDDocumento = Convert.ToString(Request.QueryString["id_doc"]);
         //string IDAlumno = Session["CASNetworkID"].ToString();
         string strQuery = "SELECT DISTINCT Documento,Formato FROM Documentos_Alumno WHERE IDDocumento=@IDDocumento AND IDTipoDocumento=@IDTipoDocumento AND IDAlumno=@IDAlumno";
-        SqlCommand cmd = new SqlCommand(strQuery);
-        cmd.Parameters.Add("@IDDocumento", SqlDbType.Int).Value = Convert.ToInt32(IDDocumento);
-        cmd.Parameters.Add("@IDTipoDocumento", SqlDbType.Int).Value = Convert.ToInt32(IdTipoDocumento);
-        cmd.Parameters.Add("@IDAlumno", SqlDbType.VarChar).Value = IDAlumno;
+        MySqlCommand cmd = new MySqlCommand(strQuery);
+        cmd.Parameters.Add("@IDDocumento", MySqlDbType.Int32).Value = Convert.ToInt32(IDDocumento);
+        cmd.Parameters.Add("@IDTipoDocumento", MySqlDbType.Int32).Value = Convert.ToInt32(IdTipoDocumento);
+        cmd.Parameters.Add("@IDAlumno", MySqlDbType.VarChar).Value = IDAlumno;
         DataTable dt = GetData(cmd);
         if (dt != null)
         {
@@ -204,12 +205,12 @@ public partial class ListadoExpediente : System.Web.UI.Page
 
     }
 
-    private DataTable GetData(SqlCommand cmd)
+    private DataTable GetData(MySqlCommand cmd)
     {
         DataTable dt = new DataTable();
         String strConnString = System.Configuration.ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString;
-        SqlConnection con = new SqlConnection(strConnString);
-        SqlDataAdapter sda = new SqlDataAdapter();
+        MySqlConnection con = new MySqlConnection(strConnString);
+        MySqlDataAdapter sda = new MySqlDataAdapter();
         cmd.CommandType = CommandType.Text;
         cmd.Connection = con;
         try
@@ -270,8 +271,8 @@ public partial class ListadoExpediente : System.Web.UI.Page
     {
         string IDAlumno = Request.QueryString["IDAlumno"].ToString();
         string strQuery = "SELECT DISTINCT Nombre FROM Alumno WHERE IDAlumno=@IDAlumno";
-        SqlCommand cmd = new SqlCommand(strQuery);
-        cmd.Parameters.Add("@IDAlumno", SqlDbType.VarChar).Value = IDAlumno;
+        MySqlCommand cmd = new MySqlCommand(strQuery);
+        cmd.Parameters.Add("@IDAlumno", MySqlDbType.VarChar).Value = IDAlumno;
         DataTable dt = GetData(cmd);
         Nombre_Alumno.Text = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(dt.Rows[0]["Nombre"].ToString());
         
@@ -308,11 +309,11 @@ public partial class ListadoExpediente : System.Web.UI.Page
 
     protected void permisos()
     {
-        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
-        ConexionSql.Open();
+        MySqlConnection ConexionMySql = new MySqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
+        ConexionMySql.Open();
         string strQuery = "SELECT DISTINCT A.IDPrivilegio,b.Permiso FROM Permisos_App_Rol A INNER JOIN Permisos_App B ON A.IDPrivilegio=B.IDPrivilegio INNER JOIN Rol C ON A.IDRol=C.IDRol WHERE B.IDMenu=3 AND B.IDSubMenu=1 AND C.Nombre='" + Session["Rol"].ToString() + "'";
-        SqlCommand cmd = new SqlCommand(strQuery, ConexionSql);
-        SqlDataReader dr = cmd.ExecuteReader();
+        MySqlCommand cmd = new MySqlCommand(strQuery, ConexionMySql);
+        MySqlDataReader dr = cmd.ExecuteReader();
         gvExpediente.Columns[6].Visible = false;
         while (dr.Read())
         {   
@@ -322,7 +323,7 @@ public partial class ListadoExpediente : System.Web.UI.Page
            
 
         }
-        ConexionSql.Close();
+        ConexionMySql.Close();
     }
 
     protected void progress_bar()
@@ -332,12 +333,12 @@ public partial class ListadoExpediente : System.Web.UI.Page
 
         string strQuery = "SELECT DISTINCT COUNT(TDA.IDTipoDocumento)Documentos, " +
                           "(SELECT COUNT(*) FROM Documentos_Alumno WHERE IDEstatusDocumento in (17,3) AND IDAlumno='" + IDAlumno + "')Entregados " +
-                          "FROM TiposDocumento_Area TDA " +
+                          "FROM TiposDocumento_nivel TDA " +
                           "JOIN TipoDocumento TD ON TD.IDTipoDocumento = TDA.IDTipoDocumento " +
-                          "JOIN Alumno AL ON AL.IDArea = TDA.IDArea AND AL.CodigoProcedencia = TDA.IDProcedencia AND AL.CodigoTipoIngreso = TDA.IDTipoIngreso AND AL.IDNivel=TDA.IDNivel  AND AL.IDModalidad=TDA.IDModalidad AND AL.IDAlumno = '" + IDAlumno + "' " +
+                          "JOIN Alumno AL ON AL.CodigoProcedencia = TDA.IDProcedencia AND AL.CodigoTipoIngreso = TDA.IDTipoIngreso AND AL.IDNivel=TDA.IDNivel  AND AL.IDModalidad=TDA.IDModalidad AND AL.IDAlumno = '" + IDAlumno + "' " +
                           "WHERE TD.id_banner NOT IN ('RVAL','SVAL')";
-        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
-        SqlCommand cmd = new SqlCommand(strQuery);
+        MySqlConnection ConexionMySql = new MySqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
+        MySqlCommand cmd = new MySqlCommand(strQuery);
         DataTable dt = GetData(cmd);
         porcentaje = (Convert.ToDouble(dt.Rows[0]["Entregados"]) * 100) / Convert.ToDouble(dt.Rows[0]["Documentos"]);
         

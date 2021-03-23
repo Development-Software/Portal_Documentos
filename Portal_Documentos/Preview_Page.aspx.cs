@@ -1,4 +1,5 @@
 ﻿
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -110,7 +111,7 @@ public partial class Preview_Page : System.Web.UI.Page
 
     protected void carga_estatus()
     {
-        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
+        MySqlConnection ConexionMySql = new MySqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
         string Query="";
         string IDTipoDocumento=Convert.ToString(Request.QueryString["IDTipoDocumento"]);
 
@@ -120,9 +121,9 @@ public partial class Preview_Page : System.Web.UI.Page
                 "INNER JOIN Rol C ON C.IDRol=B.IDRol "+
                 "WHERE B.IDTipoDocumento = '" +IDTipoDocumento+ "' AND C.Nombre = '" + Session["Rol"].ToString()+"'";
                 
-        SqlDataAdapter sqladapter = new SqlDataAdapter(Query, ConexionSql);
+        MySqlDataAdapter MySqladapter = new MySqlDataAdapter(Query, ConexionMySql);
         DataTable dt = new DataTable();
-        sqladapter.Fill(dt);
+        MySqladapter.Fill(dt);
         DropDownEstatus.DataSource = dt;
         DropDownEstatus.DataBind();
         DropDownEstatus.DataTextField = "Nombre";
@@ -140,8 +141,8 @@ public partial class Preview_Page : System.Web.UI.Page
         string IDEstatus = DropDownEstatus.SelectedValue.ToString();
         string IDDocumento = Convert.ToString(Request.QueryString["IDDocumento"]);
         string strQuery = "SELECT DISTINCT IDTipoDocumento FROM Documentos_Alumno WHERE IDDocumento=@IDDocumento";
-        SqlCommand cmd = new SqlCommand(strQuery);
-        cmd.Parameters.Add("@IDDocumento", SqlDbType.Int).Value = Convert.ToInt32(IDDocumento);
+        MySqlCommand cmd = new MySqlCommand(strQuery);
+        cmd.Parameters.Add("@IDDocumento", MySqlDbType.Int32).Value = Convert.ToInt32(IDDocumento);
         DataTable dt = GetData(cmd);
 
 
@@ -206,23 +207,22 @@ public partial class Preview_Page : System.Web.UI.Page
     {
         string IDDocumento = Convert.ToString(Request.QueryString["IDDocumento"]);
         string strQuery = "SELECT DISTINCT IDAlumno FROM Documentos_Alumno WHERE IDDocumento=@IDDocumento";
-        SqlCommand cmd = new SqlCommand(strQuery);
-        cmd.Parameters.Add("@IDDocumento", SqlDbType.Int).Value = Convert.ToInt32(IDDocumento);
+        MySqlCommand cmd = new MySqlCommand(strQuery);
+        cmd.Parameters.Add("@IDDocumento", MySqlDbType.Int32).Value = Convert.ToInt32(IDDocumento);
         DataTable dt = GetData(cmd);
 
         
-        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
-        SqlCommand cmd1 = new SqlCommand("Actualiza_Estatus_Comentario", ConexionSql);
-        cmd1.Parameters.Add("@IDDocumento", SqlDbType.Int).Value = IDDocumento;
-        cmd1.Parameters.Add("@Comentario", SqlDbType.VarChar).Value = comentarios;
-        cmd1.Parameters.Add("@fecha_mod", SqlDbType.DateTime).Value = DateTime.Now;
-        cmd1.Parameters.Add("@IDEstatusDoc", SqlDbType.Int).Value = Convert.ToInt32(IDEstatusDocumento);
-        cmd1.Parameters.Add("@User", SqlDbType.VarChar).Value = Session["user"].ToString();
+        MySqlConnection ConexionMySql = new MySqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
+        MySqlCommand cmd1 = new MySqlCommand("Actualiza_Estatus_Comentario", ConexionMySql);
+        cmd1.Parameters.Add("@IDDocumento_in", MySqlDbType.Int32).Value = IDDocumento;
+        cmd1.Parameters.Add("@Comentario_in", MySqlDbType.VarChar).Value = comentarios;
+        cmd1.Parameters.Add("@IDEstatusDoc_in", MySqlDbType.Int32).Value = Convert.ToInt32(IDEstatusDocumento);
+        cmd1.Parameters.Add("@User_in", MySqlDbType.VarChar).Value = Session["user"].ToString();
         cmd1.CommandType = CommandType.StoredProcedure;
-        //cmd1.Connection = ConexionSql;
-        ConexionSql.Open();
+        //cmd1.Connection = ConexionMySql;
+        ConexionMySql.Open();
         cmd1.ExecuteNonQuery();
-        ConexionSql.Close();
+        ConexionMySql.Close();
         if (IDEstatusDocumento != "6") {
             if (IDEstatusDocumento == "2")
             {
@@ -329,12 +329,12 @@ public partial class Preview_Page : System.Web.UI.Page
 
     //}
 
-    private DataTable GetData(SqlCommand cmd)
+    private DataTable GetData(MySqlCommand cmd)
     {
         DataTable dt = new DataTable();
         String strConnString = System.Configuration.ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString;
-        SqlConnection con = new SqlConnection(strConnString);
-        SqlDataAdapter sda = new SqlDataAdapter();
+        MySqlConnection con = new MySqlConnection(strConnString);
+        MySqlDataAdapter sda = new MySqlDataAdapter();
         cmd.CommandType = CommandType.Text;
         cmd.Connection = con;
         try
@@ -386,8 +386,8 @@ public partial class Preview_Page : System.Web.UI.Page
 
         string IDDocumento = Convert.ToString(Request.QueryString["IDDocumento"]);
         string strQuery = "SELECT DISTINCT IDEstatusDocumento FROM Documentos_Alumno WHERE IDDocumento=@IDDocumento";
-        SqlCommand cmd = new SqlCommand(strQuery);
-        cmd.Parameters.Add("@IDDocumento", SqlDbType.Int).Value = Convert.ToInt32(IDDocumento);
+        MySqlCommand cmd = new MySqlCommand(strQuery);
+        cmd.Parameters.Add("@IDDocumento", MySqlDbType.Int32).Value = Convert.ToInt32(IDDocumento);
         DataTable dt = GetData(cmd);
         if (dt.Rows[0]["IDEstatusDocumento"].ToString() == "1")
         {
@@ -409,8 +409,8 @@ public partial class Preview_Page : System.Web.UI.Page
         string IDEstatus = DropDownEstatus.SelectedValue.ToString();
         string IDDocumento = Convert.ToString(Request.QueryString["IDDocumento"]);
         string strQuery = "SELECT DISTINCT IDAlumno FROM Documentos_Alumno WHERE IDDocumento=@IDDocumento";
-        SqlCommand cmd = new SqlCommand(strQuery);
-        cmd.Parameters.Add("@IDDocumento", SqlDbType.Int).Value = Convert.ToInt32(IDDocumento);
+        MySqlCommand cmd = new MySqlCommand(strQuery);
+        cmd.Parameters.Add("@IDDocumento", MySqlDbType.Int32).Value = Convert.ToInt32(IDDocumento);
         DataTable dt = GetData(cmd);
         if (dt != null)
         {
@@ -504,23 +504,23 @@ public partial class Preview_Page : System.Web.UI.Page
         
         if (Session["Rol"].ToString() == "Alumno") { IDAlumno = Session["iduser"].ToString(); } else {
             string strQuery_1 = "SELECT DISTINCT IDAlumno FROM Documentos_Alumno WHERE IDDocumento=@IDDocumento";
-            SqlCommand cmd_1 = new SqlCommand(strQuery_1);
-            cmd_1.Parameters.Add("@IDDocumento", SqlDbType.Int).Value = Convert.ToInt32(IDDocumento);
+            MySqlCommand cmd_1 = new MySqlCommand(strQuery_1);
+            cmd_1.Parameters.Add("@IDDocumento", MySqlDbType.Int32).Value = Convert.ToInt32(IDDocumento);
             DataTable dt = GetData(cmd_1);
                  IDAlumno = dt.Rows[0]["IDAlumno"].ToString();
             }
         string strQuery = "SELECT DISTINCT IDNotificacion,IDEstatus,Descripcion,Tipo_Notificacion, Asunto_correo,Cuerpo_correo FROM Configuracion_Notificaciones WHERE Dias=0 AND IDEstatus=@IDEstatus";
-        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
-        SqlCommand cmd = new SqlCommand(strQuery);
+        MySqlConnection ConexionMySql = new MySqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
+        MySqlCommand cmd = new MySqlCommand(strQuery);
         try
         {
-            ConexionSql.Open();
+            ConexionMySql.Open();
 
             cmd.Parameters.AddWithValue("@IDEstatus", Estatus);
             cmd.CommandType = CommandType.Text;
             cmd.CommandText = strQuery;
-            cmd.Connection = ConexionSql;
-            SqlDataReader dr = cmd.ExecuteReader();
+            cmd.Connection = ConexionMySql;
+            MySqlDataReader dr = cmd.ExecuteReader();
             while (dr.Read())
             {
                
@@ -554,7 +554,7 @@ public partial class Preview_Page : System.Web.UI.Page
             sw.WriteLine(cmd.CommandText);
             sw.Close();
         }
-        finally { ConexionSql.Close(); }
+        finally { ConexionMySql.Close(); }
 
 
 
@@ -563,23 +563,23 @@ public partial class Preview_Page : System.Web.UI.Page
     protected void obtener_plantilla_correo(int IDNotificacion,string IDEstatus,string IDDocumento, string IDAlumno, string comentarios)
     {
         
-        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
+        MySqlConnection ConexionMySql = new MySqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
 
-        SqlCommand cmd = new SqlCommand("Creacion_correo", ConexionSql);
+        MySqlCommand cmd = new MySqlCommand("Creacion_correo", ConexionMySql);
         cmd.CommandType = CommandType.StoredProcedure;
-        cmd.Parameters.AddWithValue("@IDNotificacion", IDNotificacion);
-        cmd.Parameters.AddWithValue("@IDEstatus", IDEstatus);
-        cmd.Parameters.AddWithValue("@IDDocumento", IDDocumento);
-        cmd.Parameters.AddWithValue("@IDAlumno", IDAlumno);
-        cmd.Parameters.Add("@Correo", SqlDbType.VarChar, 100);
+        cmd.Parameters.AddWithValue("@IDNotificacion_in", IDNotificacion);
+        cmd.Parameters.AddWithValue("@IDEstatus_in", IDEstatus);
+        cmd.Parameters.AddWithValue("@IDDocumento_in", IDDocumento);
+        cmd.Parameters.AddWithValue("@IDAlumno_in", IDAlumno);
+        cmd.Parameters.Add("@Correo", MySqlDbType.VarChar, 100);
         cmd.Parameters["@Correo"].Direction = ParameterDirection.Output;
-        cmd.Parameters.Add("@Subject", SqlDbType.VarChar,1000);
+        cmd.Parameters.Add("@Subject", MySqlDbType.VarChar,1000);
         cmd.Parameters["@Subject"].Direction = ParameterDirection.Output;
-        cmd.Parameters.Add("@Body", SqlDbType.VarChar, 8000);
+        cmd.Parameters.Add("@Body", MySqlDbType.VarChar, 8000);
         cmd.Parameters["@Body"].Direction = ParameterDirection.Output;
         try
         {
-            ConexionSql.Open();
+            ConexionMySql.Open();
             //Executing the SP
 
             int i = cmd.ExecuteNonQuery();
@@ -614,7 +614,7 @@ public partial class Preview_Page : System.Web.UI.Page
         }
         finally
         {
-            ConexionSql.Close();
+            ConexionMySql.Close();
         }
 
 
@@ -624,24 +624,24 @@ public partial class Preview_Page : System.Web.UI.Page
     protected void obtener_plantilla_correo_admin(int IDNotificacion, string IDEstatus, string IDDocumento, string IDAlumno, string User)
     {
 
-        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
+        MySqlConnection ConexionMySql = new MySqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
 
-        SqlCommand cmd = new SqlCommand("Creacion_correo_admin", ConexionSql);
+        MySqlCommand cmd = new MySqlCommand("Creacion_correo_admin", ConexionMySql);
         cmd.CommandType = CommandType.StoredProcedure;
-        cmd.Parameters.AddWithValue("@IDNotificacion", IDNotificacion);
-        cmd.Parameters.AddWithValue("@IDEstatus", IDEstatus);
-        cmd.Parameters.AddWithValue("@IDDocumento", IDDocumento);
-        cmd.Parameters.AddWithValue("@IDAlumno", IDAlumno);
+        cmd.Parameters.AddWithValue("@IDNotificacion_in", IDNotificacion);
+        cmd.Parameters.AddWithValue("@IDEstatus_in", IDEstatus);
+        cmd.Parameters.AddWithValue("@IDDocumento_in", IDDocumento);
+        cmd.Parameters.AddWithValue("@IDAlumno_in", IDAlumno);
         cmd.Parameters.AddWithValue("@user", User);
-        cmd.Parameters.Add("@Correo", SqlDbType.VarChar, 100);
+        cmd.Parameters.Add("@Correo", MySqlDbType.VarChar, 100);
         cmd.Parameters["@Correo"].Direction = ParameterDirection.Output;
-        cmd.Parameters.Add("@Subject", SqlDbType.VarChar, 1000);
+        cmd.Parameters.Add("@Subject", MySqlDbType.VarChar, 1000);
         cmd.Parameters["@Subject"].Direction = ParameterDirection.Output;
-        cmd.Parameters.Add("@Body", SqlDbType.VarChar, 8000);
+        cmd.Parameters.Add("@Body", MySqlDbType.VarChar, 8000);
         cmd.Parameters["@Body"].Direction = ParameterDirection.Output;
         try
         {
-            ConexionSql.Open();
+            ConexionMySql.Open();
             //Executing the SP
 
             int i = cmd.ExecuteNonQuery();
@@ -683,7 +683,7 @@ public partial class Preview_Page : System.Web.UI.Page
         }
         finally
         {
-            ConexionSql.Close();
+            ConexionMySql.Close();
         }
 
 
@@ -835,8 +835,8 @@ public partial class Preview_Page : System.Web.UI.Page
     {
         string IDDocumento = Convert.ToString(Request.QueryString["IDDocumento"]);
         string strQuery = "SELECT DISTINCT IDAlumno FROM Documentos_Alumno WHERE IDDocumento=@IDDocumento";
-        SqlCommand cmd = new SqlCommand(strQuery);
-        cmd.Parameters.Add("@IDDocumento", SqlDbType.Int).Value = Convert.ToInt32(IDDocumento);
+        MySqlCommand cmd = new MySqlCommand(strQuery);
+        cmd.Parameters.Add("@IDDocumento", MySqlDbType.Int32).Value = Convert.ToInt32(IDDocumento);
         DataTable dt = GetData(cmd);
         string IDAlumno = dt.Rows[0]["IDAlumno"].ToString();
         ArrayList arrParametros = new ArrayList();
@@ -847,33 +847,33 @@ public partial class Preview_Page : System.Web.UI.Page
     protected void log(string IDAlumno, string IDDocumento,string IDEstatus)
     {
         string strQuery = "SELECT DISTINCT Nombre FROM Estatus WHERE IDEstatus=@IDEstatus";
-        SqlCommand cmd = new SqlCommand(strQuery);
-        cmd.Parameters.Add("@IDEstatus", SqlDbType.Int).Value = Convert.ToInt32(IDEstatus);
+        MySqlCommand cmd = new MySqlCommand(strQuery);
+        cmd.Parameters.Add("@IDEstatus", MySqlDbType.Int32).Value = Convert.ToInt32(IDEstatus);
         DataTable dt = GetData(cmd);
 
 
-        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
-        SqlCommand cmd1 = new SqlCommand();
+        MySqlConnection ConexionMySql = new MySqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
+        MySqlCommand cmd1 = new MySqlCommand();
         cmd1.CommandText = "INSERT INTO Logs (Proceso,Descripcion,Usuario,Fecha) VALUES ('Cambio de estatus','Se cambio el estatus del Documento con ID: '+@IDDocumento+' al estatus: '+@Estatus+' del alumno: '+@IDAlumno,@UserLog,@fecha_mod)";
-        cmd1.Parameters.Add("@IDAlumno", SqlDbType.VarChar).Value = IDAlumno;
-        cmd1.Parameters.Add("@IDDocumento", SqlDbType.VarChar).Value = IDDocumento;
-        cmd1.Parameters.Add("@Estatus", SqlDbType.VarChar).Value = dt.Rows[0]["Nombre"].ToString();
-        cmd1.Parameters.Add("@UserLog", SqlDbType.VarChar).Value = Session["user"].ToString(); ;
-        cmd1.Parameters.Add("@fecha_mod", SqlDbType.DateTime).Value = DateTime.Now;
+        cmd1.Parameters.Add("@IDAlumno", MySqlDbType.VarChar).Value = IDAlumno;
+        cmd1.Parameters.Add("@IDDocumento", MySqlDbType.VarChar).Value = IDDocumento;
+        cmd1.Parameters.Add("@Estatus", MySqlDbType.VarChar).Value = dt.Rows[0]["Nombre"].ToString();
+        cmd1.Parameters.Add("@UserLog", MySqlDbType.VarChar).Value = Session["user"].ToString(); ;
+        cmd1.Parameters.Add("@fecha_mod", MySqlDbType.DateTime).Value = DateTime.Now;
         cmd1.CommandType = CommandType.Text;
-        cmd1.Connection = ConexionSql;
-        ConexionSql.Open();
+        cmd1.Connection = ConexionMySql;
+        ConexionMySql.Open();
         cmd1.ExecuteNonQuery();
-        ConexionSql.Close();
+        ConexionMySql.Close();
 
     }
     protected void permisos()
     {
-        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
-        ConexionSql.Open();
+        MySqlConnection ConexionMySql = new MySqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
+        ConexionMySql.Open();
         string strQuery = "SELECT DISTINCT A.IDPrivilegio,b.Permiso FROM Permisos_App_Rol A INNER JOIN Permisos_App B ON A.IDPrivilegio=B.IDPrivilegio INNER JOIN Rol C ON A.IDRol=C.IDRol WHERE B.IDMenu=3 AND B.IDSubMenu=1 AND C.Nombre='" + Session["Rol"].ToString() + "'";
-        SqlCommand cmd = new SqlCommand(strQuery, ConexionSql);
-        SqlDataReader dr = cmd.ExecuteReader();
+        MySqlCommand cmd = new MySqlCommand(strQuery, ConexionMySql);
+        MySqlDataReader dr = cmd.ExecuteReader();
         while (dr.Read())
         {
             int IDprivilegio = dr.GetInt32(0);
@@ -882,14 +882,14 @@ public partial class Preview_Page : System.Web.UI.Page
             else { UpdatePanel.Visible = false; }
 
         }
-        ConexionSql.Close();
+        ConexionMySql.Close();
     }
     //Se agrega este control para obtener el nivel para diferenciar el correo de validación
     protected string obtener_nivel(string idalumno)
     {
         string strQuery = "select IDNivel from Alumno where IDAlumno=@idAlumno";
-        SqlCommand cmd = new SqlCommand(strQuery);
-        cmd.Parameters.Add("@idAlumno", SqlDbType.VarChar).Value = idalumno;
+        MySqlCommand cmd = new MySqlCommand(strQuery);
+        cmd.Parameters.Add("@idAlumno", MySqlDbType.VarChar).Value = idalumno;
         DataTable dt = GetData(cmd);
         string nivel = dt.Rows[0]["IDNivel"].ToString();
         return nivel;

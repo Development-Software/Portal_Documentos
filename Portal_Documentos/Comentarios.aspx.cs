@@ -32,7 +32,7 @@ public partial class Comentarios : System.Web.UI.Page
     protected void Cargacomentarios(string IDDocumento)
     {
         ArrayList arrParametros = new ArrayList();
-        arrParametros.Add(new applyWeb.Data.Parametro("@IDDocumento", IDDocumento));
+        arrParametros.Add(new applyWeb.Data.Parametro("@IDDocumento_in", IDDocumento));
         DataSet dsExpedientes = objExpediente.ExecuteSP("Obtener_Comentarios_Documento", arrParametros);
         GridViewComentarios.DataSource = dsExpedientes;
         GridViewComentarios.DataBind();

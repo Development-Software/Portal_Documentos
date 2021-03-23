@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -42,20 +43,20 @@ public partial class InputFile : System.Web.UI.Page
         else {
             try
             {
-                SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
+                MySqlConnection ConexionMySql = new MySqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
                 string strQuery = "SELECT LOWER('\"'+REPLACE(Formato,',','\",\"')+'\"')Formato,TamanoMinimo,TamanoMaximo FROM TipoDocumento WHERE IDTipoDocumento='" + IDTipoDocumento + "'";
-                ConexionSql.Open();
-                SqlDataAdapter sqladapter = new SqlDataAdapter();
-                DataSet dssql = new DataSet();
-                SqlCommand commandsql = new SqlCommand(strQuery, ConexionSql);
-                sqladapter.SelectCommand = commandsql;
-                sqladapter.Fill(dssql);
-                sqladapter.Dispose();
-                commandsql.Dispose();
-                ConexionSql.Close();
-                formato = dssql.Tables[0].Rows[0][0].ToString();
-                tamano_min = dssql.Tables[0].Rows[0][1].ToString();
-                tamano_max = dssql.Tables[0].Rows[0][2].ToString();
+                ConexionMySql.Open();
+                MySqlDataAdapter MySqladapter = new MySqlDataAdapter();
+                DataSet dsMySql = new DataSet();
+                MySqlCommand commandMySql = new MySqlCommand(strQuery, ConexionMySql);
+                MySqladapter.SelectCommand = commandMySql;
+                MySqladapter.Fill(dsMySql);
+                MySqladapter.Dispose();
+                commandMySql.Dispose();
+                ConexionMySql.Close();
+                formato = dsMySql.Tables[0].Rows[0][0].ToString();
+                tamano_min = dsMySql.Tables[0].Rows[0][1].ToString();
+                tamano_max = dsMySql.Tables[0].Rows[0][2].ToString();
             }catch(Exception ex)
             {
                 DirectoryInfo virtualDirPath = new DirectoryInfo(Server.MapPath("~/Logs/"));

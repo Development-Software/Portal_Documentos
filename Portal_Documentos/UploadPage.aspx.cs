@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -50,9 +51,9 @@ public partial class UploadPage : System.Web.UI.Page
                 path += IDTipoDocumento + extension;
 
                 string strQuery = "SELECT DISTINCT COUNT(*)Contador FROM Documentos_Alumno WHERE IDTipoDocumento=@IDTipoDocumento AND IDAlumno=@IDAlumno";
-                SqlCommand cmd = new SqlCommand(strQuery);
-                cmd.Parameters.Add("@IDTipoDocumento", SqlDbType.Int).Value = IDTipoDocumento;
-                cmd.Parameters.Add("@IDAlumno", SqlDbType.VarChar).Value = IDAlumno;
+                MySqlCommand cmd = new MySqlCommand(strQuery);
+                cmd.Parameters.Add("@IDTipoDocumento", MySqlDbType.Int32).Value = IDTipoDocumento;
+                cmd.Parameters.Add("@IDAlumno", MySqlDbType.VarChar).Value = IDAlumno;
                 DataTable dt = GetData(cmd);
 
                 if (dt.Rows[0]["Contador"].ToString() == "0")
@@ -63,20 +64,20 @@ public partial class UploadPage : System.Web.UI.Page
                         BinaryReader br = new BinaryReader(fs);
                         Byte[] ImagenOriginal = br.ReadBytes((Int32)fs.Length);
 
-                        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
-                        SqlCommand cmd1 = new SqlCommand();
+                        MySqlConnection ConexionMySql = new MySqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
+                        MySqlCommand cmd1 = new MySqlCommand();
                         cmd1.CommandText = "INSERT INTO Documentos_Alumno (IDAlumno,IDTipoDocumento,Documento,IDEstatusDocumento,Formato,FechaUltModif) VALUES(@IDAlumno,@IDTipoDocumento,@Documento,@IDEstatusDocumento,@Formato,@FechaUltModif)";
-                        cmd1.Parameters.Add("@IDAlumno", SqlDbType.VarChar).Value = IDAlumno;
-                        cmd1.Parameters.Add("@IDTipoDocumento", SqlDbType.Int).Value = IDTipoDocumento;
-                        cmd1.Parameters.Add("@Documento", SqlDbType.Binary).Value = ImagenOriginal;
-                        cmd1.Parameters.Add("@IDEstatusDocumento", SqlDbType.Int).Value = 17;
-                        cmd1.Parameters.Add("@Formato", SqlDbType.VarChar).Value = formato.ToLower();
-                        cmd1.Parameters.Add("@FechaUltModif", SqlDbType.DateTime).Value = DateTime.Now;
+                        cmd1.Parameters.Add("@IDAlumno", MySqlDbType.VarChar).Value = IDAlumno;
+                        cmd1.Parameters.Add("@IDTipoDocumento", MySqlDbType.Int32).Value = IDTipoDocumento;
+                        cmd1.Parameters.Add("@Documento", MySqlDbType.Binary).Value = ImagenOriginal;
+                        cmd1.Parameters.Add("@IDEstatusDocumento", MySqlDbType.Int32).Value = 17;
+                        cmd1.Parameters.Add("@Formato", MySqlDbType.VarChar).Value = formato.ToLower();
+                        cmd1.Parameters.Add("@FechaUltModif", MySqlDbType.DateTime).Value = DateTime.Now;
                         cmd1.CommandType = CommandType.Text;
-                        cmd1.Connection = ConexionSql;
-                        ConexionSql.Open();
+                        cmd1.Connection = ConexionMySql;
+                        ConexionMySql.Open();
                         cmd1.ExecuteNonQuery();
-                        ConexionSql.Close();
+                        ConexionMySql.Close();
                         
                         if (Session["Rol"].ToString() != "Alumno")
                         {
@@ -101,21 +102,21 @@ public partial class UploadPage : System.Web.UI.Page
                         BinaryReader br = new BinaryReader(fs);
                         Byte[] ImagenOriginal = br.ReadBytes((Int32)fs.Length);
 
-                        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
-                        SqlCommand cmd2 = new SqlCommand();
+                        MySqlConnection ConexionMySql = new MySqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
+                        MySqlCommand cmd2 = new MySqlCommand();
                         cmd2.CommandText = "UPDATE Documentos_Alumno SET Documento=@Documento,IDEstatusDocumento=@IDEstatusDocumento, Formato=@formato, FechaUltModif=@FechaUltModif WHERE IDTipoDocumento=@IDTipoDocumento AND IDAlumno=@IDAlumno AND IDDocumento=@IDDocumento";
-                        cmd2.Parameters.Add("@Documento", SqlDbType.Binary).Value = ImagenOriginal;
-                        cmd2.Parameters.Add("@IDEstatusDocumento", SqlDbType.Int).Value = 17;
-                        cmd2.Parameters.Add("@Formato", SqlDbType.VarChar).Value = formato.ToLower();
-                        cmd2.Parameters.Add("@FechaUltModif", SqlDbType.DateTime).Value = DateTime.Now;
-                        cmd2.Parameters.Add("@IDTipoDocumento", SqlDbType.Int).Value = IDTipoDocumento;
-                        cmd2.Parameters.Add("@IDAlumno", SqlDbType.VarChar).Value = IDAlumno;
-                        cmd2.Parameters.Add("@IDDocumento", SqlDbType.Int).Value = IDDocumento;
+                        cmd2.Parameters.Add("@Documento", MySqlDbType.Binary).Value = ImagenOriginal;
+                        cmd2.Parameters.Add("@IDEstatusDocumento", MySqlDbType.Int32).Value = 17;
+                        cmd2.Parameters.Add("@Formato", MySqlDbType.VarChar).Value = formato.ToLower();
+                        cmd2.Parameters.Add("@FechaUltModif", MySqlDbType.DateTime).Value = DateTime.Now;
+                        cmd2.Parameters.Add("@IDTipoDocumento", MySqlDbType.Int32).Value = IDTipoDocumento;
+                        cmd2.Parameters.Add("@IDAlumno", MySqlDbType.VarChar).Value = IDAlumno;
+                        cmd2.Parameters.Add("@IDDocumento", MySqlDbType.Int32).Value = IDDocumento;
                         cmd2.CommandType = CommandType.Text;
-                        cmd2.Connection = ConexionSql;
-                        ConexionSql.Open();
+                        cmd2.Connection = ConexionMySql;
+                        ConexionMySql.Open();
                         cmd2.ExecuteNonQuery();
-                        ConexionSql.Close();
+                        ConexionMySql.Close();
                         
                         if (Session["Rol"].ToString() != "Alumno")
                         {
@@ -149,12 +150,12 @@ public partial class UploadPage : System.Web.UI.Page
         
     }
 
-    private DataTable GetData(SqlCommand cmd)
+    private DataTable GetData(MySqlCommand cmd)
     {
         DataTable dt = new DataTable();
-        String strConnString = System.Configuration.ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString;
-        SqlConnection con = new SqlConnection(strConnString);
-        SqlDataAdapter sda = new SqlDataAdapter();
+        String strConnString = System.Configuration.ConfigurationManager.ConnectionStrings["MySqlConnectionString"].ConnectionString;
+        MySqlConnection con = new MySqlConnection(strConnString);
+        MySqlDataAdapter sda = new MySqlDataAdapter();
         cmd.CommandType = CommandType.Text;
         cmd.Connection = con;
         try
@@ -186,17 +187,17 @@ public partial class UploadPage : System.Web.UI.Page
 
 
         string strQuery = "SELECT DISTINCT IDNotificacion,IDEstatus,Descripcion,Tipo_Notificacion, Asunto_correo,Cuerpo_correo FROM Configuracion_Notificaciones WHERE Dias=0 AND IDEstatus=@IDEstatus";
-        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
-        SqlCommand cmd = new SqlCommand(strQuery);
+        MySqlConnection ConexionMySql = new MySqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
+        MySqlCommand cmd = new MySqlCommand(strQuery);
         try
         {
-            ConexionSql.Open();
+            ConexionMySql.Open();
 
             cmd.Parameters.AddWithValue("@IDEstatus", Estatus);
             cmd.CommandType = CommandType.Text;
             cmd.CommandText = strQuery;
-            cmd.Connection = ConexionSql;
-            SqlDataReader dr = cmd.ExecuteReader();
+            cmd.Connection = ConexionMySql;
+            MySqlDataReader dr = cmd.ExecuteReader();
             while (dr.Read())
             {
                 obtener_plantilla_correo_admin(dr.GetInt32(0), Estatus, IDAlumno, IDTipoDocumento, "notificaciones");
@@ -213,7 +214,7 @@ public partial class UploadPage : System.Web.UI.Page
             sw.WriteLine(cmd.CommandText);
             sw.Close();
         }
-        finally { ConexionSql.Close(); }
+        finally { ConexionMySql.Close(); }
 
 
 
@@ -222,23 +223,23 @@ public partial class UploadPage : System.Web.UI.Page
     protected void obtener_plantilla_correo(int IDNotificacion, string IDEstatus, string IDTipoDocumento, string IDAlumno)
     {
 
-        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
+        MySqlConnection ConexionMySql = new MySqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
 
-        SqlCommand cmd = new SqlCommand("Creacion_correo_upload", ConexionSql);
+        MySqlCommand cmd = new MySqlCommand("Creacion_correo_upload", ConexionMySql);
         cmd.CommandType = CommandType.StoredProcedure;
-        cmd.Parameters.AddWithValue("@IDNotificacion", IDNotificacion);
-        cmd.Parameters.AddWithValue("@IDEstatus", IDEstatus);
-        cmd.Parameters.AddWithValue("@IDTipoDocumento", IDTipoDocumento);
-        cmd.Parameters.AddWithValue("@IDAlumno", IDAlumno);
-        cmd.Parameters.Add("@Correo", SqlDbType.VarChar, 100);
+        cmd.Parameters.AddWithValue("@IDNotificacion_in", IDNotificacion);
+        cmd.Parameters.AddWithValue("@IDEstatus_in", IDEstatus);
+        cmd.Parameters.AddWithValue("@IDTipoDocumento_in", IDTipoDocumento);
+        cmd.Parameters.AddWithValue("@IDAlumno_in", IDAlumno);
+        cmd.Parameters.Add("@Correo", MySqlDbType.VarChar, 100);
         cmd.Parameters["@Correo"].Direction = ParameterDirection.Output;
-        cmd.Parameters.Add("@Subject", SqlDbType.VarChar, 1000);
+        cmd.Parameters.Add("@Subject", MySqlDbType.VarChar, 1000);
         cmd.Parameters["@Subject"].Direction = ParameterDirection.Output;
-        cmd.Parameters.Add("@Body", SqlDbType.VarChar, 8000);
+        cmd.Parameters.Add("@Body", MySqlDbType.VarChar, 8000);
         cmd.Parameters["@Body"].Direction = ParameterDirection.Output;
         try
         {
-            ConexionSql.Open();
+            ConexionMySql.Open();
             //Executing the SP
 
             int i = cmd.ExecuteNonQuery();
@@ -260,7 +261,7 @@ public partial class UploadPage : System.Web.UI.Page
         }
         finally
         {
-            ConexionSql.Close();
+            ConexionMySql.Close();
         }
 
 
@@ -270,24 +271,24 @@ public partial class UploadPage : System.Web.UI.Page
     protected void obtener_plantilla_correo_admin(int IDNotificacion, string IDEstatus, string IDAlumno, string IDTipoDocumento, string User)
     {
 
-        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
+        MySqlConnection ConexionMySql = new MySqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
 
-        SqlCommand cmd = new SqlCommand("Creacion_correo_admin_upload", ConexionSql);
+        MySqlCommand cmd = new MySqlCommand("Creacion_correo_admin_upload", ConexionMySql);
         cmd.CommandType = CommandType.StoredProcedure;
-        cmd.Parameters.AddWithValue("@IDNotificacion", IDNotificacion);
-        cmd.Parameters.AddWithValue("@IDEstatus", IDEstatus);
-        cmd.Parameters.AddWithValue("@IDTipoDocumento", IDTipoDocumento);
-        cmd.Parameters.AddWithValue("@IDAlumno", IDAlumno);
+        cmd.Parameters.AddWithValue("@IDNotificacion_in", IDNotificacion);
+        cmd.Parameters.AddWithValue("@IDEstatus_in", IDEstatus);
+        cmd.Parameters.AddWithValue("@IDTipoDocumento_in", IDTipoDocumento);
+        cmd.Parameters.AddWithValue("@IDAlumno_in", IDAlumno);
         cmd.Parameters.AddWithValue("@user", User);
-        cmd.Parameters.Add("@Correo", SqlDbType.VarChar, 100);
+        cmd.Parameters.Add("@Correo", MySqlDbType.VarChar, 100);
         cmd.Parameters["@Correo"].Direction = ParameterDirection.Output;
-        cmd.Parameters.Add("@Subject", SqlDbType.VarChar, 1000);
+        cmd.Parameters.Add("@Subject", MySqlDbType.VarChar, 1000);
         cmd.Parameters["@Subject"].Direction = ParameterDirection.Output;
-        cmd.Parameters.Add("@Body", SqlDbType.VarChar, 8000);
+        cmd.Parameters.Add("@Body", MySqlDbType.VarChar, 8000);
         cmd.Parameters["@Body"].Direction = ParameterDirection.Output;
         try
         {
-            ConexionSql.Open();
+            ConexionMySql.Open();
             //Executing the SP
 
             int i = cmd.ExecuteNonQuery();
@@ -310,7 +311,7 @@ public partial class UploadPage : System.Web.UI.Page
         }
         finally
         {
-            ConexionSql.Close();
+            ConexionMySql.Close();
         }
 
 
@@ -351,18 +352,18 @@ public partial class UploadPage : System.Web.UI.Page
     protected void log(string IDAlumno, string Documento)
     {
 
-        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
-        SqlCommand cmd1 = new SqlCommand();
+        MySqlConnection ConexionMySql = new MySqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
+        MySqlCommand cmd1 = new MySqlCommand();
         cmd1.CommandText = "INSERT INTO Logs (Proceso,Descripcion,Usuario,Fecha) VALUES ('Subir Archivo','Se a cargado correctamente el documento '+@Documento+' al alumno '+@IDAlumno,@UserLog,@fecha_mod)";
-        cmd1.Parameters.Add("@IDAlumno", SqlDbType.VarChar).Value = IDAlumno;
-        cmd1.Parameters.Add("@Documento", SqlDbType.VarChar).Value = Documento;
-        cmd1.Parameters.Add("@UserLog", SqlDbType.VarChar).Value = Session["user"].ToString(); ;
-        cmd1.Parameters.Add("@fecha_mod", SqlDbType.DateTime).Value = DateTime.Now;
+        cmd1.Parameters.Add("@IDAlumno", MySqlDbType.VarChar).Value = IDAlumno;
+        cmd1.Parameters.Add("@Documento", MySqlDbType.VarChar).Value = Documento;
+        cmd1.Parameters.Add("@UserLog", MySqlDbType.VarChar).Value = Session["user"].ToString(); ;
+        cmd1.Parameters.Add("@fecha_mod", MySqlDbType.DateTime).Value = DateTime.Now;
         cmd1.CommandType = CommandType.Text;
-        cmd1.Connection = ConexionSql;
-        ConexionSql.Open();
+        cmd1.Connection = ConexionMySql;
+        ConexionMySql.Open();
         cmd1.ExecuteNonQuery();
-        ConexionSql.Close();
+        ConexionMySql.Close();
 
     }
 
@@ -375,12 +376,12 @@ public partial class UploadPage : System.Web.UI.Page
 
         string strQuery = "SELECT DISTINCT COUNT(TDA.IDTipoDocumento)Documentos, " +
                           "(SELECT COUNT(*) FROM Documentos_Alumno WHERE IDEstatusDocumento in (17,3) AND IDAlumno='"+IDAlumno+"')Entregados " +
-                          "FROM TiposDocumento_Area TDA " +
+                          "FROM TiposDocumento_nivel TDA " +
                           "JOIN TipoDocumento TD ON TD.IDTipoDocumento = TDA.IDTipoDocumento " +
-                          "JOIN Alumno AL ON AL.IDArea = TDA.IDArea AND AL.CodigoProcedencia = TDA.IDProcedencia AND AL.CodigoTipoIngreso = TDA.IDTipoIngreso AND AL.IDNivel=TDA.IDNivel  AND AL.IDModalidad=TDA.IDModalidad AND AL.IDAlumno = '" + IDAlumno + "' " +
+                          "JOIN Alumno AL ON AL.CodigoProcedencia = TDA.IDProcedencia AND AL.CodigoTipoIngreso = TDA.IDTipoIngreso AND AL.IDNivel=TDA.IDNivel  AND AL.IDModalidad=TDA.IDModalidad AND AL.IDAlumno = '" + IDAlumno + "' " +
                           "WHERE TD.id_banner NOT IN ('RVAL','SVAL')";
-        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
-        SqlCommand cmd = new SqlCommand(strQuery);
+        MySqlConnection ConexionMySql = new MySqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
+        MySqlCommand cmd = new MySqlCommand(strQuery);
         DataTable dt = GetData(cmd);
         if(dt.Rows[0]["Documentos"].ToString()== dt.Rows[0]["Entregados"].ToString())
         {
@@ -396,13 +397,13 @@ public partial class UploadPage : System.Web.UI.Page
         string strQuery = "SELECT TDA.IDDocumento,TDA.IDEstatusDocumento,TDA.Documento,TDA.FechaUltModif " +
                             "FROM Documentos_Alumno TDA " +
                             "JOIN TipoDocumento TD ON TD.IDTipoDocumento = TDA.IDTipoDocumento  " +
-                            "WHERE TD.id_banner NOT IN ('RVAL','SVAL')  " +
+                            "WHERE TD.id_saes NOT IN ('RVAL','SVAL')  " +
                             "AND TDA.IDAlumno='"+IDAlumno+"'";
         String strConnString = System.Configuration.ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString;
-        SqlConnection con = new SqlConnection(strConnString);
-        SqlCommand command = new SqlCommand(strQuery, con);
+        MySqlConnection con = new MySqlConnection(strConnString);
+        MySqlCommand command = new MySqlCommand(strQuery, con);
         con.Open();
-        SqlDataReader reader = command.ExecuteReader();
+        MySqlDataReader reader = command.ExecuteReader();
         if (reader.HasRows)
         {
             while (reader.Read())
@@ -421,11 +422,11 @@ public partial class UploadPage : System.Web.UI.Page
     {
         string Query_Insert;
         Query_Insert = "UPDATE Documentos_Alumno SET IDEstatusDocumento='3', FechaUltModif='" + DateTime.Now + "' WHERE IDDocumento='" + IDDocumento + "'";
-        String strConnString = System.Configuration.ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString;
-        SqlConnection con = new SqlConnection(strConnString);
-        SqlCommand commandsql = new SqlCommand(Query_Insert, con);
+        String strConnString = System.Configuration.ConfigurationManager.ConnectionStrings["MySqlConnectionString"].ConnectionString;
+        MySqlConnection con = new MySqlConnection(strConnString);
+        MySqlCommand commandMySql = new MySqlCommand(Query_Insert, con);
         con.Open();
-        commandsql.ExecuteNonQuery();
+        commandMySql.ExecuteNonQuery();
         con.Close();
     }
 }

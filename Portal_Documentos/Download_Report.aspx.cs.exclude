@@ -1,4 +1,5 @@
 ﻿using ClosedXML.Excel;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -20,10 +21,10 @@ public partial class Download_Report : System.Web.UI.Page
     protected void carga_reporte_export()
     {
         String strConnString = System.Configuration.ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString;
-        SqlConnection con = new SqlConnection(strConnString);
-        SqlCommand cmd = new SqlCommand();
+        MySqlConnection con = new MySqlConnection(strConnString);
+        MySqlCommand cmd = new MySqlCommand();
         cmd.CommandType = CommandType.StoredProcedure;
-        SqlDataAdapter sda = new SqlDataAdapter("sp_reporte_1", con);
+        MySqlDataAdapter sda = new MySqlDataAdapter("sp_reporte_1", con);
         DataSet ds = new DataSet();
         sda.Fill(ds, "Reporte");
         GridView1.DataSource = ds.Tables[0];

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
@@ -49,20 +50,20 @@ public partial class Video_F : System.Web.UI.Page
 
     protected void checkbox_checked()
     {
-        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
+        MySqlConnection ConexionMySql = new MySqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
         string strQuery = "";
         strQuery = "UPDATE Alumno SET video='1' WHERE IDAlumno='" + Session["CASNetworkID"].ToString() + "'";
-        ConexionSql.Open();
-        SqlCommand commandsql = new SqlCommand(strQuery, ConexionSql);
-        commandsql.ExecuteNonQuery();
+        ConexionMySql.Open();
+        MySqlCommand commandMySql = new MySqlCommand(strQuery, ConexionMySql);
+        commandMySql.ExecuteNonQuery();
     }
     protected void checkbox_no_checked()
     {
-        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
+        MySqlConnection ConexionMySql = new MySqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
         string strQuery = "";
         strQuery = "UPDATE Alumno SET video='0' WHERE IDAlumno='" + Session["CASNetworkID"].ToString() + "'";
-        ConexionSql.Open();
-        SqlCommand commandsql = new SqlCommand(strQuery, ConexionSql);
-        commandsql.ExecuteNonQuery();
+        ConexionMySql.Open();
+        MySqlCommand commandMySql = new MySqlCommand(strQuery, ConexionMySql);
+        commandMySql.ExecuteNonQuery();
     }
 }

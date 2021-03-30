@@ -240,7 +240,7 @@ public partial class Tipodocumentos : System.Web.UI.Page
     static void sincroniza_relacion_doc_nivel()
     {
         string strQuery = "";
-        strQuery = "SELECT DISTINCT '0' IDPROCEDENCIA,TCODO_TTIIN_CLAVE,TCODO_TMODA_CLAVE,TCODO_TDOCU_CLAVE,TCODO_TNIVE_CLAVE FROM TCODO WHERE TCODO_ESTATUS='A' ORDER BY TCODO_TDOCU_CLAVE";
+        strQuery = "SELECT DISTINCT 'N' IDPROCEDENCIA,TCODO_TTIIN_CLAVE,TCODO_TMODA_CLAVE,TCODO_TDOCU_CLAVE,TCODO_TNIVE_CLAVE FROM TCODO WHERE TCODO_ESTATUS='A' ORDER BY TCODO_TDOCU_CLAVE";
         MySqlConnection ConexionMySql_saes = new MySqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionStringSAES"].ConnectionString);
         MySqlDataReader data_saes;
         MySqlCommand consulta_saes = new MySqlCommand();

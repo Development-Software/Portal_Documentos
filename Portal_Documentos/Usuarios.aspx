@@ -47,6 +47,7 @@
     <asp:Table ID="tabla_add" runat="server" HorizontalAlign="Center">
         <asp:TableRow>
             <asp:TableCell Width="100px" HorizontalAlign="Center">USUARIO</asp:TableCell>
+            <asp:TableCell Width="200px" HorizontalAlign="Center">CONTRASEÑA</asp:TableCell>
             <asp:TableCell Width="300px" HorizontalAlign="Center">NOMBRE</asp:TableCell>
             <asp:TableCell Width="300px" HorizontalAlign="Center">CORREO</asp:TableCell>
             <asp:TableCell Width="150px" HorizontalAlign="Center">ROL</asp:TableCell>
@@ -54,19 +55,23 @@
         </asp:TableRow>
         <asp:TableRow>
             <asp:TableCell><asp:TextBox ID="Txtuser" runat="server" Visible="True" WIDTH="100px" AutoPostBack="false" CssClass="form-control" Height="30px"></asp:TextBox></asp:TableCell>
+            <asp:TableCell><asp:TextBox ID="Textpass" runat="server" Visible="True" WIDTH="200px" AUTOPOSTBACK="false" CssClass="form-control" Height="30px" TextMode="Password"></asp:TextBox></asp:TableCell>
             <asp:TableCell><asp:TextBox ID="TxtNombre" runat="server" Visible="True" WIDTH="300px" AUTOPOSTBACK="false" CssClass="form-control" Height="30px"></asp:TextBox></asp:TableCell>
             <asp:TableCell><asp:TextBox ID="Txtcorreo" runat="server" Visible="True" WIDTH="300px" AUTOPOSTBACK="false" CssClass="form-control" Height="30px"></asp:TextBox></asp:TableCell>
             <asp:TableCell><asp:dropdownlist ID="CboRoles" RUNAT="server" WIDTH="150px" AutoPostBack="false"  CssClass="form-control" Height="30px" Font-Size="10px"></asp:dropdownlist></asp:TableCell>
-        <asp:TableCell><asp:ImageButton ID="Agregar_cmd" runat="server" ImageUrl="~/Images/Usuarios/add.png" Height="30px" Width="30px"
-                                  TOOLTIP="Guardar" IMAGEALIGN="Middle" OnClick="Agregar_Click"/></asp:TableCell>
-            <asp:TableCell><asp:ImageButton ID="update" runat="server" ImageUrl="~/Images/Usuarios/update.png" Height="30px" Width="30px"
-                                  TOOLTIP="Actualizar" IMAGEALIGN="Middle" OnClick="Update_Click" Visible="False"/></asp:TableCell>
-            <asp:TableCell><asp:ImageButton ID="delete" runat="server" ImageUrl="~/Images/Usuarios/trash.png" Height="30px" Width="30px"
-                                  TOOLTIP="Eliminar" IMAGEALIGN="Middle" OnClick="Borrar_Click" Visible="False" /></asp:TableCell>
-            <asp:TableCell><asp:ImageButton ID="cancel" runat="server" ImageUrl="~/Images/Usuarios/cancel.png" Height="30px" Width="30px"
-                                  TOOLTIP="Cancelar" IMAGEALIGN="Middle" OnClick="cancel_Click" Visible="False"/></asp:TableCell>
         </asp:TableRow>
-    </asp:Table></div>
+    </asp:Table>
+                <div id="acciones" runat="server" style="text-align:center;" visible="false">
+            <asp:ImageButton ID="Agregar_cmd" runat="server" ImageUrl="~/Images/Usuarios/add.png" Height="30px" Width="30px"
+                                  TOOLTIP="Guardar" IMAGEALIGN="Middle" OnClick="Agregar_Click"/>
+            <asp:ImageButton ID="update" runat="server" ImageUrl="~/Images/Usuarios/update.png" Height="30px" Width="30px"
+                                  TOOLTIP="Actualizar" IMAGEALIGN="Middle" OnClick="Update_Click" Visible="False"/>
+            <asp:ImageButton ID="delete" runat="server" ImageUrl="~/Images/Usuarios/trash.png" Height="30px" Width="30px"
+                                  TOOLTIP="Eliminar" IMAGEALIGN="Middle" OnClick="Borrar_Click" Visible="False" />
+            <asp:ImageButton ID="cancel" runat="server" ImageUrl="~/Images/Usuarios/cancel.png" Height="30px" Width="30px"
+                                  TOOLTIP="Cancelar" IMAGEALIGN="Middle" OnClick="cancel_Click" Visible="False"/>
+        </div>
+    </div>
                     </br>
                     <%--<table id="t_1" runat="server" align="center" class="table-responsive" width="1000px" border="1"></table>--%>
                      <table id="t_2" runat="server" align="center" width="100%" cellpadding="1" cellspacing="1">

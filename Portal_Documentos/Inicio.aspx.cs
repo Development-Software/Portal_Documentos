@@ -15,13 +15,17 @@ public partial class Inicio : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        video_tutorial();
+        
         try
         {
             if (Request.QueryString["sesion"].ToString() == "1")
             {
                 //ScriptManager.RegisterStartupScript(this, this.GetType(), "", "video_modal('Video_F.aspx','Inicio.aspx');", true);
                 video_tutorial_inicio();
+            }
+            else
+            {
+                video_tutorial();
             }
         }
         catch { }

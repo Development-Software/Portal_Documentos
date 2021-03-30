@@ -116,6 +116,7 @@ public partial class Site : System.Web.UI.MasterPage
                 Logout.Visible = true;
                 sesion_admin.Visible = false;
                 video2.Visible = false;
+                Contacto.Visible = false;
             }
             else
             {

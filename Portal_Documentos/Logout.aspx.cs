@@ -18,11 +18,10 @@ public partial class Logout : System.Web.UI.Page
         }
         else
         {
-            if (HttpContext.Current.User.Identity.Name.Length >= 8)
+            if (Session["Rol"].ToString().Equals("Alumno"))
             {
                 Session.Clear();
-                Response.Redirect("https://www.ula.edu.mx/ncas/logout");
-                //Response.Redirect("https://www.ula-azure.ula.edu.mx/ncas/logout");
+                Response.Redirect("Default.aspx");
             }
             else
             {

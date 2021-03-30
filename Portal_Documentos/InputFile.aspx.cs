@@ -44,7 +44,7 @@ public partial class InputFile : System.Web.UI.Page
             try
             {
                 MySqlConnection ConexionMySql = new MySqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
-                string strQuery = "SELECT LOWER('\"'+REPLACE(Formato,',','\",\"')+'\"')Formato,TamanoMinimo,TamanoMaximo FROM TipoDocumento WHERE IDTipoDocumento='" + IDTipoDocumento + "'";
+                string strQuery = "SELECT LOWER(CONCAT('\"',REPLACE(Formato,',','\",\"'),'\"'))Formato,TamanoMinimo,TamanoMaximo FROM TipoDocumento WHERE IDTipoDocumento='" + IDTipoDocumento + "'";
                 ConexionMySql.Open();
                 MySqlDataAdapter MySqladapter = new MySqlDataAdapter();
                 DataSet dsMySql = new DataSet();

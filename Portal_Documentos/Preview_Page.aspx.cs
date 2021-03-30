@@ -222,6 +222,7 @@ public partial class Preview_Page : System.Web.UI.Page
         //cmd1.Connection = ConexionMySql;
         ConexionMySql.Open();
         cmd1.ExecuteNonQuery();
+
         ConexionMySql.Close();
         if (IDEstatusDocumento != "6") {
             if (IDEstatusDocumento == "2")
@@ -705,7 +706,8 @@ public partial class Preview_Page : System.Web.UI.Page
         message.Body = body;
         message.IsBodyHtml = true;
         SmtpClient client = new SmtpClient(ConfigurationManager.AppSettings["MailHost"].ToString(), int.Parse(ConfigurationManager.AppSettings["Port"].ToString()));
-        client.Credentials = CredentialCache.DefaultNetworkCredentials;
+        client.Credentials = new NetworkCredential(ConfigurationManager.AppSettings["AdminMail"].ToString(), ConfigurationManager.AppSettings["pwMail"].ToString());
+        client.EnableSsl = true;
         try
         {
             client.Send(message);
@@ -840,8 +842,8 @@ public partial class Preview_Page : System.Web.UI.Page
         DataTable dt = GetData(cmd);
         string IDAlumno = dt.Rows[0]["IDAlumno"].ToString();
         ArrayList arrParametros = new ArrayList();
-        arrParametros.Add(new applyWeb.Data.Parametro("@IDEstatusDoc", IDEstatus));
-        arrParametros.Add(new applyWeb.Data.Parametro("@IDAlumno", IDAlumno));
+        arrParametros.Add(new applyWeb.Data.Parametro("@IDEstatusDoc_in", IDEstatus));
+        arrParametros.Add(new applyWeb.Data.Parametro("@IDAlumno_in", IDAlumno));
         DataSet dsUsuariosCampus = objAreas.ExecuteSP("Actualiza_Estatus_Expediente", arrParametros);
     }
     protected void log(string IDAlumno, string IDDocumento,string IDEstatus)
@@ -854,7 +856,7 @@ public partial class Preview_Page : System.Web.UI.Page
 
         MySqlConnection ConexionMySql = new MySqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
         MySqlCommand cmd1 = new MySqlCommand();
-        cmd1.CommandText = "INSERT INTO Logs (Proceso,Descripcion,Usuario,Fecha) VALUES ('Cambio de estatus','Se cambio el estatus del Documento con ID: '+@IDDocumento+' al estatus: '+@Estatus+' del alumno: '+@IDAlumno,@UserLog,@fecha_mod)";
+        cmd1.CommandText = "INSERT INTO Logs (Proceso,Descripcion,Usuario,Fecha) VALUES ('Cambio de estatus',CONCAT('Se cambio el estatus del Documento con ID: ',@IDDocumento,' al estatus: ',@Estatus,' del alumno: ',@IDAlumno),@UserLog,@fecha_mod)";
         cmd1.Parameters.Add("@IDAlumno", MySqlDbType.VarChar).Value = IDAlumno;
         cmd1.Parameters.Add("@IDDocumento", MySqlDbType.VarChar).Value = IDDocumento;
         cmd1.Parameters.Add("@Estatus", MySqlDbType.VarChar).Value = dt.Rows[0]["Nombre"].ToString();

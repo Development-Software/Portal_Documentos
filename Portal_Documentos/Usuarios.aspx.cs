@@ -10,6 +10,7 @@ using System.Web.Security;
 using System.Data.SqlClient;
 using System.Configuration;
 using System.Web.Configuration;
+using MySql.Data.MySqlClient;
 
 public partial class Usuarios : System.Web.UI.Page
 {
@@ -40,8 +41,8 @@ public partial class Usuarios : System.Web.UI.Page
     {
         System.Threading.Thread.Sleep(50);
 
-        SqlConnection ConexionSql =
-                 new SqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
+        MySqlConnection ConexionMySql =
+                 new MySqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
 
         //Obtiene si el estudiante ya tiene registro
 
@@ -56,34 +57,34 @@ public partial class Usuarios : System.Web.UI.Page
 
 
         //Label1.Text = strQueryEsc;
-        ConexionSql.Open();
+        ConexionMySql.Open();
 
-        SqlDataAdapter sqladapter = new SqlDataAdapter();
-        DataSet dssql = new DataSet();
+        MySqlDataAdapter MySqladapter = new MySqlDataAdapter();
+        DataSet dsMySql = new DataSet();
 
         DataTable TablaRoles = new DataTable();
-        SqlCommand ConsultaSql = new SqlCommand();
-        SqlDataReader DatosSql;
+        MySqlCommand ConsultaMySql = new MySqlCommand();
+        MySqlDataReader DatosMySql;
 
-        ConsultaSql.Connection = ConexionSql;
-        ConsultaSql.CommandType = CommandType.Text;
-        ConsultaSql.CommandText = strQueryRol;
-        DatosSql = ConsultaSql.ExecuteReader();
-        TablaRoles.Load(DatosSql, LoadOption.OverwriteChanges);
+        ConsultaMySql.Connection = ConexionMySql;
+        ConsultaMySql.CommandType = CommandType.Text;
+        ConsultaMySql.CommandText = strQueryRol;
+        DatosMySql = ConsultaMySql.ExecuteReader();
+        TablaRoles.Load(DatosMySql, LoadOption.OverwriteChanges);
 
         CboRoles.DataSource = TablaRoles;
         CboRoles.DataValueField = "IDRol";
         CboRoles.DataTextField = "Descripcion";
         CboRoles.DataBind();
 
-        SqlDataAdapter dataadapter = new SqlDataAdapter(strQueryEsc, ConexionSql);
+        MySqlDataAdapter dataadapter = new MySqlDataAdapter(strQueryEsc, ConexionMySql);
         DataSet ds = new DataSet();
         dataadapter.Fill(ds, "Usuarios");
         Users.DataSource = ds;
         Users.DataBind();
         Users.DataMember = "Usuarios";
 
-        ConexionSql.Close();
+        ConexionMySql.Close();
 
     }
 
@@ -113,37 +114,37 @@ public partial class Usuarios : System.Web.UI.Page
 
         else
         {
-            SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
-            ConexionSql.Open();
+            MySqlConnection ConexionMySql = new MySqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
+            ConexionMySql.Open();
 
             string strvalida = "SELECT COUNT(*) FROM Usuario WHERE Login='" + Txtuser.Text + "'";
 
-            SqlDataAdapter sqladapter = new SqlDataAdapter();
+            MySqlDataAdapter MySqladapter = new MySqlDataAdapter();
 
-            DataSet dssql1 = new DataSet();
+            DataSet dsMySql1 = new DataSet();
 
-            SqlCommand commandsql1 = new SqlCommand(strvalida, ConexionSql);
-            sqladapter.SelectCommand = commandsql1;
-            sqladapter.Fill(dssql1);
-            sqladapter.Dispose();
-            commandsql1.Dispose();
+            MySqlCommand commandMySql1 = new MySqlCommand(strvalida, ConexionMySql);
+            MySqladapter.SelectCommand = commandMySql1;
+            MySqladapter.Fill(dsMySql1);
+            MySqladapter.Dispose();
+            commandMySql1.Dispose();
 
-            if (dssql1.Tables[0].Rows[0][0].ToString() == "0")
+            if (dsMySql1.Tables[0].Rows[0][0].ToString() == "0")
             {
 
-                SqlCommand cmd = new SqlCommand("SP_insert_user", ConexionSql);
+                MySqlCommand cmd = new MySqlCommand("SP_insert_user", ConexionMySql);
                 cmd.CommandType = CommandType.StoredProcedure;
 
                 //Ejecucion del comando en el servidor de BD
-                cmd.Parameters.AddWithValue("@login", Txtuser.Text);
-                cmd.Parameters.AddWithValue("@Nombre", TxtNombre.Text);
-                cmd.Parameters.AddWithValue("@email", Txtcorreo.Text);
-                cmd.Parameters.AddWithValue("@idrol", Convert.ToInt32(CboRoles.SelectedValue.ToString()));
-                cmd.Parameters.AddWithValue("@fecha", DateTime.Now);
-                cmd.Parameters.AddWithValue("@username", Session["user"].ToString());
+                cmd.Parameters.AddWithValue("@login_in", Txtuser.Text);
+                cmd.Parameters.AddWithValue("@Nombre_in", TxtNombre.Text);
+                cmd.Parameters.AddWithValue("@email_in", Txtcorreo.Text);
+                cmd.Parameters.AddWithValue("@idrol_in", Convert.ToInt32(CboRoles.SelectedValue.ToString()));
+                cmd.Parameters.AddWithValue("@username_in", Session["user"].ToString());
+                cmd.Parameters.AddWithValue("@password_in", Textpass.Text);
                 cmd.ExecuteNonQuery();
 
-                ConexionSql.Close();
+                ConexionMySql.Close();
                 ClientScript.RegisterStartupScript(this.GetType(), "", "Agrega_usuario()", true);
 
                 TxtNombre.Text = "";
@@ -169,18 +170,18 @@ public partial class Usuarios : System.Web.UI.Page
         {
             string strBorra = "DELETE FROM Roles_Usuarios WHERE IDUsuario = (SELECT IDUsuario FROM Usuario WHERE Login='" + Txtuser.Text + "')";
             string strBorra_1 = "DELETE FROM Usuario WHERE Login='" + Txtuser.Text + "'";
-            string strlog = "INSERT INTO Logs (Proceso,Descripcion,Usuario,Fecha) VALUES ('Eliminar Usuario','Se elimino al usuario "+ Txtuser.Text+"','"+Session["user"].ToString()+"','"+DateTime.Now.ToString()+"')";
-            SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
+            string strlog = "INSERT INTO Logs (Proceso,Descripcion,Usuario,Fecha) VALUES ('Eliminar Usuario','Se elimino al usuario "+ Txtuser.Text+"','"+Session["user"].ToString()+"',CURRENT_TIMESTAMP())";
+            MySqlConnection ConexionMySql = new MySqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
 
-            ConexionSql.Open();
+            ConexionMySql.Open();
 
-            SqlCommand myCommandlog = new SqlCommand(strlog, ConexionSql);
+            MySqlCommand myCommandlog = new MySqlCommand(strlog, ConexionMySql);
             myCommandlog.ExecuteNonQuery();
-            SqlCommand myCommandborra = new SqlCommand(strBorra, ConexionSql);
+            MySqlCommand myCommandborra = new MySqlCommand(strBorra, ConexionMySql);
             myCommandborra.ExecuteNonQuery();
-            SqlCommand myCommandborra_2 = new SqlCommand(strBorra_1, ConexionSql);
+            MySqlCommand myCommandborra_2 = new MySqlCommand(strBorra_1, ConexionMySql);
             myCommandborra_2.ExecuteNonQuery();
-            ConexionSql.Close();
+            ConexionMySql.Close();
 
             ClientScript.RegisterStartupScript(this.GetType(), "", "Elimina_usuario()", true);
 
@@ -195,26 +196,26 @@ public partial class Usuarios : System.Web.UI.Page
     {
         GridViewRow row = Users.SelectedRow;
 
-        SqlConnection ConexionSql =
-                       new SqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
+        MySqlConnection ConexionMySql =
+                       new MySqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
         string strQuery = "";
         strQuery = "SELECT Nombre,Email FROM Usuario WHERE Login='" + row.Cells[1].Text.ToString() + "'";
 
-        ConexionSql.Open();
+        ConexionMySql.Open();
 
-        SqlDataAdapter sqladapter = new SqlDataAdapter();
+        MySqlDataAdapter MySqladapter = new MySqlDataAdapter();
 
-        DataSet dssql1 = new DataSet();
+        DataSet dsMySql1 = new DataSet();
 
-        SqlCommand commandsql1 = new SqlCommand(strQuery, ConexionSql);
-        sqladapter.SelectCommand = commandsql1;
-        sqladapter.Fill(dssql1);
-        sqladapter.Dispose();
-        commandsql1.Dispose();
+        MySqlCommand commandMySql1 = new MySqlCommand(strQuery, ConexionMySql);
+        MySqladapter.SelectCommand = commandMySql1;
+        MySqladapter.Fill(dsMySql1);
+        MySqladapter.Dispose();
+        commandMySql1.Dispose();
 
         Txtuser.Text = row.Cells[1].Text;
-        TxtNombre.Text = dssql1.Tables[0].Rows[0][0].ToString();
-        Txtcorreo.Text = dssql1.Tables[0].Rows[0][1].ToString();
+        TxtNombre.Text = dsMySql1.Tables[0].Rows[0][0].ToString();
+        Txtcorreo.Text = dsMySql1.Tables[0].Rows[0][1].ToString();
         CboRoles.Focus();
         Agregar_cmd.Visible = false;
         //update.Visible = true;
@@ -223,6 +224,7 @@ public partial class Usuarios : System.Web.UI.Page
         cancel.Visible = true;
         tabla_add.Visible = true;
         add_user.Visible = false;
+        acciones.Visible = true;
         //CboCampus.Items.FindByText(row.Cells[1].Text.Trim()).Selected = true;
     }
 
@@ -251,22 +253,22 @@ public partial class Usuarios : System.Web.UI.Page
         }
         else
         {
-            SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
-            ConexionSql.Open();
+            MySqlConnection ConexionMySql = new MySqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
+            ConexionMySql.Open();
 
-            SqlCommand cmd = new SqlCommand("SP_update_user", ConexionSql);
+            MySqlCommand cmd = new MySqlCommand("SP_update_user", ConexionMySql);
             cmd.CommandType = CommandType.StoredProcedure;
 
             //Ejecucion del comando en el servidor de BD
-            cmd.Parameters.AddWithValue("@login", Txtuser.Text);
-            cmd.Parameters.AddWithValue("@Nombre", TxtNombre.Text);
-            cmd.Parameters.AddWithValue("@email", Txtcorreo.Text);
-            cmd.Parameters.AddWithValue("@idrol", Convert.ToInt32(CboRoles.SelectedValue.ToString()));
-            cmd.Parameters.AddWithValue("@fecha", DateTime.Now);
-            cmd.Parameters.AddWithValue("@username", Session["user"].ToString());
+            cmd.Parameters.AddWithValue("@login_in", Txtuser.Text);
+            cmd.Parameters.AddWithValue("@Nombre_in", TxtNombre.Text);
+            cmd.Parameters.AddWithValue("@email_in", Txtcorreo.Text);
+            cmd.Parameters.AddWithValue("@idrol_in", Convert.ToInt32(CboRoles.SelectedValue.ToString()));
+            cmd.Parameters.AddWithValue("@username_in", Session["user"].ToString());
+            cmd.Parameters.AddWithValue("@password_in",Textpass.Text);
             cmd.ExecuteNonQuery();
 
-            ConexionSql.Close();
+            ConexionMySql.Close();
             ClientScript.RegisterStartupScript(this.GetType(), "", "Actualiza_usuario()", true);
 
             TxtNombre.Text = "";
@@ -291,14 +293,15 @@ public partial class Usuarios : System.Web.UI.Page
         update.Visible = false;
         Users.Columns[0].HeaderStyle.CssClass = "oculto";
         Users.Columns[0].ItemStyle.CssClass = "oculto";
+        acciones.Visible = true;
     }
     protected void permisos()
     {
-        SqlConnection ConexionSql = new SqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
-        ConexionSql.Open();
+        MySqlConnection ConexionMySql = new MySqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
+        ConexionMySql.Open();
         string strQuery = "SELECT DISTINCT A.IDPrivilegio,b.Permiso FROM Permisos_App_Rol A INNER JOIN Permisos_App B ON A.IDPrivilegio=B.IDPrivilegio INNER JOIN Rol C ON A.IDRol=C.IDRol WHERE B.IDMenu=2 AND B.IDSubMenu=3 AND C.Nombre='" + Session["Rol"].ToString() + "'";
-        SqlCommand cmd = new SqlCommand(strQuery, ConexionSql);
-        SqlDataReader dr = cmd.ExecuteReader();
+        MySqlCommand cmd = new MySqlCommand(strQuery, ConexionMySql);
+        MySqlDataReader dr = cmd.ExecuteReader();
         while (dr.Read())
         {
             int IDprivilegio = dr.GetInt32(0);
@@ -318,6 +321,6 @@ public partial class Usuarios : System.Web.UI.Page
 
 
         }
-        ConexionSql.Close();
+        ConexionMySql.Close();
     }
 }

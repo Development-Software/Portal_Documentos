@@ -1,0 +1,2 @@
+Unknown column 'NombreFROM' in 'field list'
+

@@ -354,7 +354,7 @@ public partial class UploadPage : System.Web.UI.Page
 
         MySqlConnection ConexionMySql = new MySqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
         MySqlCommand cmd1 = new MySqlCommand();
-        cmd1.CommandText = "INSERT INTO Logs (Proceso,Descripcion,Usuario,Fecha) VALUES ('Subir Archivo','Se a cargado correctamente el documento '+@Documento+' al alumno '+@IDAlumno,@UserLog,@fecha_mod)";
+        cmd1.CommandText = "INSERT INTO Logs (Proceso,Descripcion,Usuario,Fecha) VALUES ('Subir Archivo',CONCAT('Se a cargado correctamente el documento ',@Documento,' al alumno ',@IDAlumno),@UserLog,@fecha_mod)";
         cmd1.Parameters.Add("@IDAlumno", MySqlDbType.VarChar).Value = IDAlumno;
         cmd1.Parameters.Add("@Documento", MySqlDbType.VarChar).Value = Documento;
         cmd1.Parameters.Add("@UserLog", MySqlDbType.VarChar).Value = Session["user"].ToString(); ;
@@ -378,8 +378,7 @@ public partial class UploadPage : System.Web.UI.Page
                           "(SELECT COUNT(*) FROM Documentos_Alumno WHERE IDEstatusDocumento in (17,3) AND IDAlumno='"+IDAlumno+"')Entregados " +
                           "FROM TiposDocumento_nivel TDA " +
                           "JOIN TipoDocumento TD ON TD.IDTipoDocumento = TDA.IDTipoDocumento " +
-                          "JOIN Alumno AL ON AL.CodigoProcedencia = TDA.IDProcedencia AND AL.CodigoTipoIngreso = TDA.IDTipoIngreso AND AL.IDNivel=TDA.IDNivel  AND AL.IDModalidad=TDA.IDModalidad AND AL.IDAlumno = '" + IDAlumno + "' " +
-                          "WHERE TD.id_banner NOT IN ('RVAL','SVAL')";
+                          "JOIN Alumno AL ON AL.CodigoProcedencia = TDA.IDProcedencia AND AL.CodigoTipoIngreso = TDA.IDTipoIngreso AND AL.IDNivel=TDA.IDNivel  AND AL.IDModalidad=TDA.IDModalidad AND AL.IDAlumno = '" + IDAlumno + "' ";
         MySqlConnection ConexionMySql = new MySqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
         MySqlCommand cmd = new MySqlCommand(strQuery);
         DataTable dt = GetData(cmd);
@@ -421,7 +420,7 @@ public partial class UploadPage : System.Web.UI.Page
     protected void update_status( string IDDocumento)
     {
         string Query_Insert;
-        Query_Insert = "UPDATE Documentos_Alumno SET IDEstatusDocumento='3', FechaUltModif='" + DateTime.Now + "' WHERE IDDocumento='" + IDDocumento + "'";
+        Query_Insert = "UPDATE Documentos_Alumno SET IDEstatusDocumento='3', FechaUltModif=current_timestamp() WHERE IDDocumento='" + IDDocumento + "'";
         String strConnString = System.Configuration.ConfigurationManager.ConnectionStrings["MySqlConnectionString"].ConnectionString;
         MySqlConnection con = new MySqlConnection(strConnString);
         MySqlCommand commandMySql = new MySqlCommand(Query_Insert, con);

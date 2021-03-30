@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -47,12 +48,12 @@ public partial class Privacidad : System.Web.UI.Page
         //Response.Redirect("AdministraAlumno.aspx");
     }
 
-    private DataTable GetData(SqlCommand cmd)
+    private DataTable GetData(MySqlCommand cmd)
     {
         DataTable dt = new DataTable();
         String strConnString = System.Configuration.ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString;
-        SqlConnection con = new SqlConnection(strConnString);
-        SqlDataAdapter sda = new SqlDataAdapter();
+        MySqlConnection con = new MySqlConnection(strConnString);
+        MySqlDataAdapter sda = new MySqlDataAdapter();
         cmd.CommandType = CommandType.Text;
         cmd.Connection = con;
         try
@@ -76,7 +77,7 @@ public partial class Privacidad : System.Web.UI.Page
     protected bool valida_alumno()
     {
         string strQuery = "SELECT DISTINCT Count(*)Indicador FROM Alumno WHERE IDAlumno='" + Session["idUser"].ToString() + "'";
-        SqlCommand cmd = new SqlCommand(strQuery);
+        MySqlCommand cmd = new MySqlCommand(strQuery);
         DataTable dt = GetData(cmd);
         if (dt.Rows[0]["Indicador"].ToString() == "0")
             return false;

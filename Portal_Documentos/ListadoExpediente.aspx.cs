@@ -37,7 +37,9 @@ public partial class ListadoExpediente : System.Web.UI.Page
                 id_page_reload = TextBox1.Text;
             }
         }
-        catch { Response.Redirect("Inicio.aspx"); } 
+        catch { 
+            Response.Redirect("Inicio.aspx"); 
+        } 
 
         if (!HttpContext.Current.User.Identity.IsAuthenticated)
         {
@@ -98,14 +100,20 @@ public partial class ListadoExpediente : System.Web.UI.Page
 
     protected void CargaListaExpediente(string pIDAlumno)
     {
-        ArrayList arrParametros = new ArrayList();
-        arrParametros.Add(new applyWeb.Data.Parametro("@IDAlumno_in", pIDAlumno));
-        arrParametros.Add(new applyWeb.Data.Parametro("@Rol", Session["Rol"].ToString()));
-        //Session["AlumnoInperson"] = pIDAlumno;
+        try
+        {
+            ArrayList arrParametros = new ArrayList();
+            arrParametros.Add(new applyWeb.Data.Parametro("@IDAlumno_in", pIDAlumno));
+            arrParametros.Add(new applyWeb.Data.Parametro("@Rol", Session["Rol"].ToString()));
+            //Session["AlumnoInperson"] = pIDAlumno;
 
-        DataSet dsExpedientes = objExpediente.ExecuteSP("Obtener_Listado_Documentos_Alumno", arrParametros);
-        gvExpediente.DataSource = dsExpedientes;
-        gvExpediente.DataBind();
+            DataSet dsExpedientes = objExpediente.ExecuteSP("Obtener_Listado_Documentos_Alumno", arrParametros);
+            gvExpediente.DataSource = dsExpedientes;
+            gvExpediente.DataBind();
+        }catch(Exception e)
+        {
+            string text = e.Message + e.ToString() + e.StackTrace.ToString() ;
+        }
     }
 
     protected void gvExpediente_PageIndexChanging(object sender, GridViewPageEventArgs e)
@@ -335,11 +343,12 @@ public partial class ListadoExpediente : System.Web.UI.Page
                           "(SELECT COUNT(*) FROM Documentos_Alumno WHERE IDEstatusDocumento in (17,3) AND IDAlumno='" + IDAlumno + "')Entregados " +
                           "FROM TiposDocumento_nivel TDA " +
                           "JOIN TipoDocumento TD ON TD.IDTipoDocumento = TDA.IDTipoDocumento " +
-                          "JOIN Alumno AL ON AL.CodigoProcedencia = TDA.IDProcedencia AND AL.CodigoTipoIngreso = TDA.IDTipoIngreso AND AL.IDNivel=TDA.IDNivel  AND AL.IDModalidad=TDA.IDModalidad AND AL.IDAlumno = '" + IDAlumno + "' " +
-                          "WHERE TD.id_banner NOT IN ('RVAL','SVAL')";
+                          "JOIN Alumno AL ON AL.CodigoProcedencia = TDA.IDProcedencia AND AL.CodigoTipoIngreso = TDA.IDTipoIngreso AND AL.IDNivel=TDA.IDNivel  AND AL.IDModalidad=TDA.IDModalidad AND AL.IDAlumno = '" + IDAlumno + "' ";
         MySqlConnection ConexionMySql = new MySqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
         MySqlCommand cmd = new MySqlCommand(strQuery);
         DataTable dt = GetData(cmd);
+        double Entregados = Convert.ToDouble(dt.Rows[0]["Entregados"]);
+        double test_2 = Convert.ToDouble(dt.Rows[0]["Documentos"]);
         porcentaje = (Convert.ToDouble(dt.Rows[0]["Entregados"]) * 100) / Convert.ToDouble(dt.Rows[0]["Documentos"]);
         
         lbl_bar.Text = "Documentos entregados " + dt.Rows[0]["Entregados"].ToString() + " de "+ dt.Rows[0]["Documentos"] .ToString()+ " ("+ Math.Round(porcentaje).ToString()+"%)";

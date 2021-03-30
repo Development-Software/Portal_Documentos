@@ -8,6 +8,11 @@ using System.Text;
 using System.Collections;
 using System.Data;
 using System.Text.RegularExpressions;
+using MySql.Data.MySqlClient;
+using System.Configuration;
+using System.IO;
+using System.Reflection;
+using System.Threading;
 
 public partial class _Default : System.Web.UI.Page
 {
@@ -17,96 +22,87 @@ public partial class _Default : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        String networkId = CASP.Authenticate("https://www.ula.edu.mx/ncas/login", "http://www.ula.edu.mx/ncas/validate", this);
-        //String networkId = CASP.Authenticate("https://ula-azure.ula.edu.mx/ncas/login", "http://www.ula-azure.ula.edu.mx/ncas/validate", this);
-
-        if (!Page.IsPostBack)
-        {
-
-            //Es la matricula
-            Session["CASNetworkID"] = networkId;
-            String userId = Session["CASNetworkID"].ToString();
-
-
-            if (networkId != null)
-            {
-                Session["userId"] = networkId;
-
-                ArrayList arrParam = new ArrayList();
-                arrParam.Add(new applyWeb.Data.Parametro("@IDAlumno", networkId));
-                DataSet dsUsuario = objUsuarios.ExecuteSP("Obtener_Alumno", arrParam);
-                if (dsUsuario.Tables[0].Rows.Count > 0)
-                {
-                    Session["idUser"] = networkId;
-                    Session["user"] = dsUsuario.Tables[0].Rows[0]["Nombre"].ToString();
-                    dsUsuario = null;
-                }
-            }
-
-            else if (userId != "")
-            {
-                lblCas.Text = "ERROR DE AUTENTICACION POR CAS";
-            }
-            lblResult.Text = (String)Session["user"];
-            TextBox1.Text = (String)Session["userId"];
-            Ingresar_sitio();
-            
-
-        }
-        else
-        {
-            //This code runs when it is postback request
-
-
-        }
-
-
-        if (Page.IsPostBack)
-        {
-            //This code also runs when it is postback request
-
-
-        }
-
-
+        txtusername.Attributes.Add("placeholder", "Usuario");
+        txtpassword.Attributes.Add("placeholder", "Password");
+        txtusername.Attributes.Add("autocomplete", "off");
+        txtpassword.Attributes.Add("autocomplete", "off");
     }
 
-    private void Ingresar_sitio()
+    protected void btn_login_Click(object sender, EventArgs e)
     {
-        if (!string.IsNullOrEmpty(TextBox1.Text))
+        //Thread.Sleep(8000);
+        if (txtusername.Text != "" && txtpassword.Text != "")
         {
-            string Usuario = "";
-            //Service1 objLogin = new ulaDocumentos.ulaLogin.Service1();
-            //ulaDocumentos.ulaLogin.spHeader secureHeader = new ulaDocumentos.ulaLogin.spHeader();
-            System.Security.Cryptography.SHA1 Sh1 = new SHA1CryptoServiceProvider();
-            string strUser = BitConverter.ToString(Sh1.ComputeHash(ASCIIEncoding.Default.GetBytes(System.Configuration.ConfigurationManager.AppSettings["strUser"]))).Replace("-", "");
-            //secureHeader.strValor = strUser;
-            //objLogin.spHeaderValue = secureHeader;
-            //Usuario = objLogin.validacion(TextBox1.Text.ToLower(), TextBox1.Text, 1);
-            //txtUsuario.Text = Usuario;
-            if (Usuario.Equals(""))
+            //ClientScript.RegisterStartupScript(this.GetType(), "", "Entrar();", true);
+            //ScriptManager.RegisterStartupScript(this, this.GetType(), "myFuncionAlerta", "Entrar();", true);
+            if (autenticacion(txtusername.Text, txtpassword.Text))
             {
 
-                Session["idUser"] = TextBox1.Text;
-                Session["user"] = lblResult.Text;
-                Session["Rol"] = "Alumno"; ;
-                //Session["idUser"] = TextBox1.Text;
-                //string[] strValores = Usuario.Split('|');
-                //Session["user"] = strValores[0];
-                //Session["Rol"] = "Alumno";
+                Session["idUser"] = txtusername.Text;
+                Session["Rol"] = "Alumno";
                 FormsAuthentication.Initialize();
                 FormsAuthenticationTicket fat = new FormsAuthenticationTicket(1,
-                        TextBox1.Text, DateTime.Now, DateTime.Now.AddMinutes(20), false, Session["Rol"].ToString(), FormsAuthentication.FormsCookiePath);
+                txtusername.Text, DateTime.Now, DateTime.Now.AddMinutes(20), false, Session["Rol"].ToString(), FormsAuthentication.FormsCookiePath);
                 Response.Cookies.Add(new HttpCookie(FormsAuthentication.FormsCookieName, FormsAuthentication.Encrypt(fat)));
-                Response.Redirect("Inicio.aspx?sesion=1");
-            }
-            else
-            {
 
-                lblError.Text = "El Usuario y/o contraseña no son válidos";
-                lblError.Visible = true;
+                Response.Redirect("Inicio.aspx?sesion=1");
             }
         }
     }
 
+    private bool autenticacion(string username_text, string password_text)
+    {
+        MySqlConnection conn = new MySqlConnection(ConfigurationManager.ConnectionStrings["MysqlConnectionString"].ConnectionString);
+        MySqlCommand cmd = new MySqlCommand("Login_Alumno", conn);
+        cmd.CommandType = CommandType.StoredProcedure;
+        conn.Open();
+
+        cmd.Parameters.AddWithValue("@username", username_text);
+        cmd.Parameters.AddWithValue("@password_text", password_text);
+        cmd.Parameters.Add("@Result", MySqlDbType.Int32);
+        cmd.Parameters["@Result"].Direction = ParameterDirection.Output;
+        try
+        {
+            cmd.ExecuteNonQuery();
+            return Convert.ToBoolean((Int32)cmd.Parameters["@Result"].Value);
+        }
+        catch (Exception ex)
+        {
+            registro_log(1, MethodBase.GetCurrentMethod().Name, ex.ToString(), ex.Message.ToString(), "Username: " + username_text + "/Password: " + password_text);
+            return false;
+        }
+        finally
+        {
+            conn.Close();
+
+        }
+
+
+    }
+
+    protected void registro_log(int debug_mode, string metodo, string var1, string var2, string var3)
+    {
+        if (debug_mode == 1)
+        {
+            StreamWriter sw = new StreamWriter(Server.MapPath("~/logs/error/") + "Error(" + metodo + ")_" + DateTime.Now.ToString("dd_MM_yyyy") + ".txt", true);
+            sw.WriteLine("---------------------------------------" + DateTime.Now.ToString() + "--------------------------------------------");
+            if (var1 != "") { sw.WriteLine(var1); }
+            if (var2 != "") { sw.WriteLine(var2); }
+            if (var3 != "") { sw.WriteLine(var3); }
+            sw.WriteLine("------------------------------------------------------------------------------------------------------");
+            sw.Close();
+        }
+        else if (debug_mode == 2)
+        {
+            StreamWriter sw = new StreamWriter(Server.MapPath("~/logs/debug/") + "Debug(" + metodo + ")_" + DateTime.Now.ToString("dd_MM_yyyy") + ".txt", true);
+            sw.WriteLine("---------------------------------------" + DateTime.Now.ToString() + "--------------------------------------------");
+            if (var1 != "") { sw.WriteLine(var1); }
+            if (var2 != "") { sw.WriteLine(var2); }
+            if (var3 != "") { sw.WriteLine(var3); }
+            sw.WriteLine("------------------------------------------------------------------------------------------------------");
+            sw.Close();
+        }
+
+
+    }
 }
